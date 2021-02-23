@@ -9,8 +9,8 @@ app.use((req, res, next) => {
     next();
 });
 
-const commentsRoutes = require('./routes/comments');
+const postsRoutes = require('./routes/post');
 
-app.use('/comments', commentsRoutes);
+app.use('/', postsRoutes);
 
 module.exports = app;
