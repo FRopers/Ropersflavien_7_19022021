@@ -1,4 +1,5 @@
 const express = require('express');
+const bodyParser = require("body-parser");
 
 const app = express();
 
@@ -9,8 +10,12 @@ app.use((req, res, next) => {
     next();
 });
 
+app.use(bodyParser.json());
+
 const postsRoutes = require('./routes/post');
+const usersRoutes = require('./routes/user');
 
 app.use('/', postsRoutes);
+app.use('/', usersRoutes);
 
 module.exports = app;
