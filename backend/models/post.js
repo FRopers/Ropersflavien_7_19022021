@@ -6,7 +6,6 @@ function Post(req) {
     this.text = req.text;
 };
 
-/*Recherche et envoie tous les posts*/
 Post.getAllPosts = (res) => {
     connection.query("Select * from post", (err, posts) => {
 
@@ -18,7 +17,6 @@ Post.getAllPosts = (res) => {
     });
 };
 
-/*Récupère les données envoyées et les sauvegarde dans la bdd */
 Post.createPost = (req, res) => {
     connection.query("INSERT INTO post SET id_user= ?, title = ?, text = ?", [req.userId,req.title,req.text], (err, post) =>{
 

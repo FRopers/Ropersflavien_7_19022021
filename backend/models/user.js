@@ -5,8 +5,6 @@ function User(req) {
     this.password = req.password;
 };
 
-/*Sauvegarde un utilisateur sur la bdd */
-// hash à voir
 User.createUser = (req, res) => {
     connection.query("INSERT INTO user SET email= ?, password = ?", [req.email,req.password], (err, user) =>{
 
@@ -17,16 +15,17 @@ User.createUser = (req, res) => {
     })
 };
 
-/*Vérifie si l'utilisateur loggé existe*/
-User.login = (req, res) => {
-    connection.query("SELECT * FROM user WHERE email= ?", [req.email], (err, user) =>{
 
-        if(err) {
+User.login = (req, res) => {
+    connection.query("SELECT * FROM user WHERE email= ? AND password= ?", [req.email, req.password], (err, user) =>{
+
+        if(err) {           
             res(err, null);
         }
+
         res(null, user);
     })
-}
+};
 
 
 module.exports= User;
