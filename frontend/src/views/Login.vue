@@ -3,7 +3,7 @@
         <form>
             <div>
                 <label for="email"></label>
-                <input type="text" id="email"  class="form_login" placeholder="E-mail" v-model="email" required>
+                <input type="email" id="email"  class="form_login" placeholder="E-mail" v-model="email" required>
             </div>
             <div>
                 <label for="password" placeholder></label>
@@ -36,12 +36,13 @@ export default {
             .then((res) => {
                 localStorage.setItem('token', res.data.token);
                 localStorage.setItem('userId', res.data.userId);
+                console.log(res);
             })
             .catch((err) => { 
-                console.log(err ) 
-            })
+                console.log(err) 
+            });
         },
-    },
+    }
 }
 </script>
 
@@ -73,5 +74,4 @@ button {
     background-color: #0079d3;
     outline: none;
 }
-
 </style>

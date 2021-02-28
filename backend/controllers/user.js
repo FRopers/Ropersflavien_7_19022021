@@ -7,14 +7,14 @@ const privateKey = process.env.JWT_PRIVATEKEY;
 // hash à voir
 // gestion des erreur !!
 exports.createNewUser = (req, res) => {
-    let newUser = new User(req.body);
-    User.createUser(newUser, (err, user) => {
-      
-      if (err) {
-        return res.send(err);
-      }
-      res.json(user);
-    });
+  let newUser = new User(req.body);
+  User.createUser(newUser, (err, user) => {
+    
+    if (err) {
+      return res.send(err);
+    }
+    res.json(user);
+  });
 };
 
 // Vérifie si l'utilisateur loggé existe sur la bdd 
@@ -32,11 +32,10 @@ exports.loginUser = (req, res) => {
     if (user != null) {
       if (user.length > 0) {
         return res.status(200).json({
-            userId: user[0].id,
-            token: jwt.sign({ userId: user[0].id}, privateKey, { expiresIn: '24h'})
-          });
-        } 
-
+          userId: user[0].id, //user[0].id permet de selectionner id dans un format RowDataPacket
+          token: jwt.sign({ userId: user[0].id}, privateKey, { expiresIn: '24h'})
+        });
+      } 
       res.status(400).send("Email ou mot de passe incorrect");
     }
   });

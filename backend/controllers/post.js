@@ -3,13 +3,13 @@ const Post = require('../models/post');
 // Recherche et envoie tous les posts
 // voir gestion d'erreur
 exports.listAllPosts = (req, res) => {
-    Post.getAllPosts((err, posts) => { 
-      
-      if (err) {
-        res.send(err);
-      }       
-      res.send(posts);
-    });
+  Post.getAllPosts((err, posts) => { 
+    
+    if (err) {
+      res.send(err);
+    }       
+    res.send(posts);
+  });
 };
 
 // Récupère les données envoyées et les sauvegarde dans la bdd

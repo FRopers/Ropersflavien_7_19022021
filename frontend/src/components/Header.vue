@@ -2,12 +2,12 @@
     <header>
         <nav>
             <h1>
-                <a href=""><img src="../assets/logo_groupomania.svg" alt="logo Groupomania"></a>
+                <router-link to="home"><img src="../assets/logo_groupomania.svg" alt="logo Groupomania"></router-link>
             </h1>
 
             <ul>
                 <li>
-                    <a class="" href="">Créer un post</a>
+                    <router-link to="post">Créer un post</router-link>
                 </li>
             </ul>
         </nav>
