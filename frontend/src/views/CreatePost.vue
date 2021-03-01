@@ -1,7 +1,7 @@
 <template>
     <Header />
     <div>
-        <form>
+        <form @submit.prevent='postNewPost()'>
             <div>
                 <label for="title">Titre</label>
                 <input type="text" id="title" v-model="title" required>
@@ -10,7 +10,7 @@
                 <label for="text" placeholder>Texte</label>
                 <textarea id="text" v-model="text" required></textarea>
             </div>
-            <button v-on:click="postNewPost()">Envoyer</button>
+            <button type="submit">Envoyer</button>
         </form>
     </div>
 </template>
@@ -22,7 +22,7 @@ const authToken = localStorage.getItem('token');
 import Header from '../components/Header'
 
 export default {
-    name: "Post",
+    name: "CreatePost",
         components: {
         Header
     },
@@ -45,7 +45,10 @@ export default {
                         'Authorization': `Bearer ${authToken}` 
                     }
             })
-            .then((res) => console.log(res))
+            .then((res) => {
+                this.$router.push('/')
+                console.log(res)
+            })
             .catch(error => console.log(error));
         },
     },

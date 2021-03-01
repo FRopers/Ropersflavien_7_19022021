@@ -1,7 +1,7 @@
 <template>
     <Header :navbars ="navbars"/>
     <div class="login">
-        <form @submit.prevent='login()'><!-- réponse marine -->
+        <form @submit.prevent='signup()'><!-- réponse marine -->
             <div>
                 <label for="email"></label>
                 <input type="email" id="email" name="email" class="form_login" placeholder="E-mail" v-model="email" required>
@@ -10,7 +10,7 @@
                 <label for="password" placeholder></label>
                 <input type="password" id="password" name="password" class="form_login" placeholder="Mot de passe" v-model="password" required>
             </div>
-            <button type="submit">Se connecter</button>
+            <button type="submit">S'inscrire</button>
         </form>
     </div>
 </template>
@@ -28,32 +28,25 @@ export default {
             email: "",
             password: "",
             navbars: [
-                {name: 'Inscription', router: 'signup'}
+                {name: 'Connexion', router: 'login'}
             ]
         }
     },
 
     methods:{
-        login(){
-            axios.post('http://localhost:3000/login', {
+        signup(){
+            axios.post('http://localhost:3000/signup', {
                 email: this.email,
                 password: this.password
             })
             .then((res) => {
-                this.validateConexion(res)
-                this.$router.push('/');
+                //ce connecter automatiquement ?
                 console.log(res);
             })
             .catch((err) => { 
                 console.log(err) 
             });
         },
-
-        validateConexion(res){
-            localStorage.setItem('token', res.data.token);
-            localStorage.setItem('userId', res.data.userId);
-            localStorage.setItem('time', Date.now()); // enregistre un timestamp
-        }
     }
 }
 </script>

@@ -1,5 +1,5 @@
 <template>
-    <Header />
+    <Header :navbars ="navbars"/>
     <div v-for="post in posts" :key="post">
         <h2>{{ post.title }}</h2>
         <p>{{ post.text }}</p>
@@ -10,6 +10,7 @@
 <script>
 const axios = require('axios');
 const authToken = localStorage.getItem('token');
+const time = +localStorage.getItem('time');
 
 import Header from '../components/Header'
 
@@ -21,12 +22,22 @@ export default {
 
     data() {
         return {
-            posts: []
+            posts: [],
+            navbars: [
+                {name: 'Créer un post', router: 'createpost',},
+            ]
         }
     },
 
     methods: {
-        //Ne gère pas le userID
+        validateConnexion() {
+            if (Date.now() - time >= 86400000) { // vérifie si le token à dépasser ça durer de vie de 24h
+                this.$router.replace('/login')
+            } else {
+                this.getAllposts();
+            }
+        },
+
         getAllposts(){
             axios.get('http://localhost:3000/',
             {
@@ -38,8 +49,9 @@ export default {
             .catch(error => console.log(error));
         },
     },
+
     beforeMount(){
-        this.getAllposts()
+        this.validateConnexion();
     }
 }
 </script>

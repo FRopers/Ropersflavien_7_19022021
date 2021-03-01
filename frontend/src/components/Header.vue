@@ -2,12 +2,12 @@
     <header>
         <nav>
             <h1>
-                <router-link to="home"><img src="../assets/logo_groupomania.svg" alt="logo Groupomania"></router-link>
+                <router-link to="/"><img src="../assets/logo_groupomania.svg" alt="logo Groupomania"></router-link>
             </h1>
 
             <ul>
-                <li>
-                    <router-link to="post">Créer un post</router-link>
+                <li v-for="item in navbars" :key="item.name">
+                    <router-link class="link" :to="{path: item.router}">{{ item.name }}</router-link>
                 </li>
             </ul>
         </nav>
@@ -15,9 +15,12 @@
 </template>
 
 <script>
+
 export default {
-    name: 'Header'
+    name: 'Header',
+    props: ['navbars']
 }
+
 </script>
 
 <style lang="scss">
@@ -39,10 +42,25 @@ export default {
         display: flex;
     }
     li {
+        display: flex;
+        align-items: center;
+        justify-content: center;
         list-style: none;
+        font-size: 0.9em;
+        font-weight: 700;
+        padding: 0 15px;
+        height: 40px;
+        border-radius: 30px;
+        background-color: #0079d3;
     }
     img {
         width: 200px;
     }
-
+    .link {
+        color: white;
+        text-decoration: none;
+        :hover {
+            color: white;
+        }
+    }
 </style>

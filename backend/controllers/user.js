@@ -9,9 +9,10 @@ const privateKey = process.env.JWT_PRIVATEKEY;
 exports.createNewUser = (req, res) => {
   let newUser = new User(req.body);
   User.createUser(newUser, (err, user) => {
+    console.log(err);
     
     if (err) {
-      return res.send(err);
+      return res.status(401).send(err);//401?
     }
     res.json(user);
   });
