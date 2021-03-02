@@ -14,8 +14,10 @@ app.use(bodyParser.json());
 
 const postsRoutes = require('./routes/post');
 const usersRoutes = require('./routes/user');
+const commentsRoutes = require('./routes/comment');
 
-app.use('/', postsRoutes);
 app.use('/', usersRoutes);
+app.use('/', postsRoutes);
+app.use('/comment', commentsRoutes);
 
 module.exports = app;

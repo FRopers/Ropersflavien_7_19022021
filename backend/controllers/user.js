@@ -8,13 +8,12 @@ const privateKey = process.env.JWT_PRIVATEKEY;
 // gestion des erreur !!
 exports.createNewUser = (req, res) => {
   let newUser = new User(req.body);
-  User.createUser(newUser, (err, user) => {
-    console.log(err);
+  User.createUser(newUser, (error, result) => {
     
-    if (err) {
-      return res.status(401).send(err);//401?
+    if (error) {
+      return res.status(401).send(error);//401?
     }
-    res.json(user);
+    res.json(result);
   });
 };
 
@@ -23,18 +22,18 @@ exports.createNewUser = (req, res) => {
 // manque: vérification si la requête contient bien un email ou un mdp
 // a vérifier pas de réponse si les if ne sont pas valide (nécessaire?)
 exports.loginUser = (req, res) => {
-  let newUser = new User(req.body);
-  User.login(newUser, (err, user) => {
+  let user = new User(req.body);
+  User.login(user, (error, result) => {
 
-    if (err) {
-      res.status(404).send(err);
+    if (error) {
+      res.status(404).send(error);
     }
    
-    if (user != null) {
-      if (user.length > 0) {
+    if (result != null) {
+      if (result.length > 0) {
         return res.status(200).json({
-          userId: user[0].id, //user[0].id permet de selectionner id dans un format RowDataPacket
-          token: jwt.sign({ userId: user[0].id}, privateKey, { expiresIn: '24h'})
+          userId: result[0].id, //user[0].id permet de selectionner id dans un format RowDataPacket
+          token: jwt.sign({ userId: result[0].id}, privateKey, { expiresIn: '24h'})
         });
       } 
       res.status(400).send("Email ou mot de passe incorrect");

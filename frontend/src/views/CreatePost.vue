@@ -1,5 +1,5 @@
 <template>
-    <Header />
+    <Header :navbars ="navbars"/>
     <div>
         <form @submit.prevent='postNewPost()'>
             <div>
@@ -30,7 +30,10 @@ export default {
     data() {
         return {
             title: "",
-            text: ""
+            text: "",
+            navbars: [
+                {name: 'Accueil', router: '/'},
+            ]
         }
     },
 

@@ -5,25 +5,25 @@ function User(req) {
     this.password = req.password;
 };
 
-User.createUser = (req, res) => {
-    connection.query("INSERT INTO user SET email= ?, password = ?", [req.email,req.password], (err, user) =>{
+User.createUser = (newUser, res) => {
+    connection.query("INSERT INTO user SET email= ?, password = ?", [newUser.email,newUser.password], (error, result) =>{
 
-        if(err) {
-            res(err, null);
+        if(error) {
+            res(error, null);
         }
-        res(null, user);
+        res(null, result);
     })
 };
 
 
-User.login = (req, res) => {
-    connection.query("SELECT * FROM user WHERE email= ? AND password= ?", [req.email, req.password], (err, user) =>{
+User.login = (user, res) => {
+    connection.query("SELECT * FROM user WHERE email= ? AND password= ?", [user.email, user.password], (error, result) =>{
 
-        if(err) {           
-            res(err, null);
+        if(error) {           
+            res(error, null);
         }
 
-        res(null, user);
+        res(null, result);
     })
 };
 

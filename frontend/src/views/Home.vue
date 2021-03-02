@@ -1,9 +1,10 @@
 <template>
     <Header :navbars ="navbars"/>
-    <div v-for="post in posts" :key="post">
-        <h2>{{ post.title }}</h2>
-        <p>{{ post.text }}</p>
-
+    <div v-for="post in posts" :key="post" class="post">
+        <router-link :to="{ path: 'post', query: { id: post.id }}">
+            <h2>{{ post.title }}</h2>
+            <p>{{ post.text }}</p>
+        </router-link>
     </div>
 </template>
 
@@ -45,8 +46,8 @@ export default {
                     'Authorization': `Bearer ${authToken}` 
                 }
             })
-            .then(response => this.posts = response.data)
-            .catch(error => console.log(error));
+            .then(res => this.posts = res.data)
+            .catch(err => console.log(err));
         },
     },
 
@@ -56,8 +57,8 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-    div {
+<style lang="scss">
+    .post{
         padding: 20px;
         margin: auto;
         margin-top: 20px;

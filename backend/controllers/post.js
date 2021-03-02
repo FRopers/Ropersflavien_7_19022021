@@ -3,25 +3,39 @@ const Post = require('../models/post');
 // Recherche et envoie tous les posts
 // voir gestion d'erreur
 exports.listAllPosts = (req, res) => {
-  Post.getAllPosts((err, posts) => { 
+  Post.getAllPosts((error, result) => { 
     
-    if (err) {
-      res.send(err);
+    if (error) {
+      res.send(error);
     }       
-    res.send(posts);
+    res.json(result);
   });
 };
 
-// Récupère les données envoyées et les sauvegarde dans la bdd
+// Recherche et envoie le post souhaité
 // voir gestion d'erreur
-exports.createNewPost = function(req, res) {
-  let newPost = new Post(req.body);
-  Post.createPost(newPost, (err, post) => {
+exports.threadForOnePosts = (req, res) => {
+  let postId = req.params.id;
+  Post.getOnePost(postId, (error, result) => { 
     
-    if (err) {
-      res.send(err);
+    if (error) {
+      res.send(error);
     }       
-    res.json(post);
+    res.json(result);
   });
 };
+
+// Récupère les données concernant un post et les sauvegardes dans la bdd
+// voir gestion d'erreur
+exports.createNewPost = (req, res) => {
+  let newPost = new Post(req.body);
+  Post.createPost(newPost, (error, result) => {
+    
+    if (error) {
+      res.send(error);
+    }       
+    res.json(result);
+  });
+};
+
 

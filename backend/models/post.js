@@ -7,23 +7,33 @@ function Post(req) {
 };
 
 Post.getAllPosts = (res) => {
-    connection.query("Select * from post", (err, posts) => {
+    connection.query("Select * from post", (error, result) => {
 
-        if(err) {
-            res(err, null); //null utile lors de l'appelle de la fonction dans le controller exemple ligne:4 Post.getAllPosts((err, posts) => { , posts devient null avec cette ligne. 
+        if(error) {
+            res(error, null); //null utile lors de l'appelle de la fonction dans le controller exemple ligne:4 Post.getAllPosts((error, result) => { , result devient null avec cette ligne. 
                             //erreur sur le tuto?
         }
-        res(null, posts);
+        res(null, result);
     });
 };
 
-Post.createPost = (req, res) => {
-    connection.query("INSERT INTO post SET id_user= ?, title = ?, text = ?", [req.userId,req.title,req.text], (err, post) =>{
+Post.getOnePost = (postId, res) => {
+    connection.query("Select * FROM post WHERE id= ?", [postId], (error, result) => {
 
-        if(err) {
-            res(err, null);
+        if(error) {
+            res(error, null);
         }
-        res(null, post);
+        res(null, result);
+    });
+};
+
+Post.createPost = (newPost, res) => {
+    connection.query("INSERT INTO post SET id_user= ?, title = ?, text = ?", [newPost.userId,newPost.title,newPost.text], (error, result) =>{
+
+        if(error) {
+            res(error, null);
+        }
+        res(null, result);
 
     });   
 };
