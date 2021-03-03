@@ -3,6 +3,10 @@
     <div class="login">
         <form @submit.prevent='signup()'><!-- réponse marine -->
             <div>
+                <label for="pseudo"></label>
+                <input type="text" id="pseudo" name="pseudo" class="form_login" placeholder="Pseudo" v-model="pseudo" required>
+            </div>
+            <div>
                 <label for="email"></label>
                 <input type="email" id="email" name="email" class="form_login" placeholder="E-mail" v-model="email" required>
             </div>
@@ -25,6 +29,7 @@ export default {
 
     data() {
         return {
+            pseudo: "",
             email: "",
             password: "",
             navbars: [
@@ -36,8 +41,9 @@ export default {
     methods:{
         signup(){
             axios.post('http://localhost:3000/signup', {
+                pseudo: this.pseudo,
                 email: this.email,
-                password: this.password
+                password: this.password,
             })
             .then((res) => {
                 //ce connecter automatiquement ?

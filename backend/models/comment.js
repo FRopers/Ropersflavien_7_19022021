@@ -7,7 +7,7 @@ function Comment(req) {
 };
 
 Comment.getAllCommentByPost = (postId, res) => {
-    connection.query("SELECT comment.comment, comment.id_user FROM comment INNER JOIN post ON comment.id_post = post.id WHERE post.id = ?", [postId], (error, result) =>{
+    connection.query("SELECT comment.comment, user.pseudo FROM comment, user, post WHERE comment.id_post = ? AND comment.id_user = user.id AND comment.id_post = post.id", [postId], (error, result) =>{
 
         if(error) {
             res(error, null);

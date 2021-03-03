@@ -1,15 +1,16 @@
 <template>
     <Header :navbars ="navbars"/>
-    <div>
+    <div class="post">
         <form @submit.prevent='postNewPost()'>
             <div>
                 <label for="title">Titre</label>
-                <input type="text" id="title" v-model="title" required>
+                <input type="text" id="title" v-model="post.title" required>
             </div>
             <div>
                 <label for="text" placeholder>Texte</label>
-                <textarea id="text" v-model="text" required></textarea>
+                <textarea id="text" v-model="post.text" required></textarea>
             </div>
+            <Upload @image_uploaded="saveImage"/>
             <button type="submit">Envoyer</button>
         </form>
     </div>
@@ -17,20 +18,25 @@
 
 <script>
 const axios = require('axios');
-const authToken = localStorage.getItem('token');
 
 import Header from '../components/Header'
+import Upload from '../components/Upload'
 
 export default {
     name: "CreatePost",
         components: {
-        Header
+        Header,
+        Upload
     },
 
     data() {
         return {
-            title: "",
-            text: "",
+            post: {
+                userId: +localStorage.getItem('userId'),
+                title: "",
+                text: "",
+            },
+            image:"",
             navbars: [
                 {name: 'Accueil', router: '/'},
             ]
@@ -38,17 +44,24 @@ export default {
     },
 
     methods: {
+
+        saveImage(payload) {
+            this.image = payload.image;
+        },
+
         postNewPost(){
-            axios.post('http://localhost:3000/', {
-                    userId: +localStorage.getItem('userId'),//le + devant le localStorage permet d'envoyer userId en type:Number
-                    title: this.title,
-                    text: this.text
-            }, {    
+            const authToken = localStorage.getItem('token');
+            const formData = new FormData();
+            formData.append('post', JSON.stringify(this.post));
+            formData.append('image', this.image)
+            axios.post('http://localhost:3000/', formData, {
+    
                     headers: {
                         'Authorization': `Bearer ${authToken}` 
                     }
             })
             .then((res) => {
+                this.image = ''; //renitialise la variable, à tester sans
                 this.$router.push('/')
                 console.log(res)
             })
@@ -59,4 +72,7 @@ export default {
 </script>
 
 <style lang="scss" scoped>
+    form {
+        width: 100%;
+    }
 </style>

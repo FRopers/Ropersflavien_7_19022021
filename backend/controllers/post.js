@@ -28,7 +28,8 @@ exports.threadForOnePosts = (req, res) => {
 // Récupère les données concernant un post et les sauvegardes dans la bdd
 // voir gestion d'erreur
 exports.createNewPost = (req, res) => {
-  let newPost = new Post(req.body);
+  const bodyParse = JSON.parse(req.body.post);
+  let newPost = new Post(bodyParse);
   Post.createPost(newPost, (error, result) => {
     
     if (error) {

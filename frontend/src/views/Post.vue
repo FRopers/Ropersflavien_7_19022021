@@ -6,20 +6,28 @@
             <p>{{ post.text }}</p>
         </div>
 
+        <form @submit.prevent='postNewComment()'><!-- réponse marine -->
+            <div>
+                <label for="comment"></label>
+                <textarea id="comment" v-model="comment" placeholder="Ajouter un commentaire" required></textarea>
+            </div>
+            
+            <button type="submit">Ajouter</button>
+        </form>
+        
         <div>
             <h3>Commentaires:</h3>
         </div>
 
-        <div v-for="comment in comments" :key="comment" >
-            <p>pseudo</p>
-            <p>{{ comment.comment }}</p>
+        <div v-for="item in thread" :key="item" >
+            <p>{{ item.pseudo }}</p>
+            <p>{{ item.comment }}</p>
         </div>
     </div>
 </template>
 
 <script>
 const axios = require('axios');
-const authToken = localStorage.getItem('token');
 
 import Header from '../components/Header'
 
@@ -32,7 +40,8 @@ export default {
     data() {
         return {
             post: "", 
-            comments: [],          
+            comment: "",
+            thread: [],          
             navbars: [
                 {name: 'Créer un post', router: 'createpost'}
             ]
@@ -41,6 +50,7 @@ export default {
 
     methods: {
         getOnePost(){
+            const authToken = localStorage.getItem('token');
             let searchParams = new URLSearchParams(window.location.search);
             let id = searchParams.get("id");
             axios.get('http://localhost:3000/'+ id,
@@ -55,26 +65,47 @@ export default {
             .catch(err => console.log(err));
         },
 
-        getAllComments(){
-        let searchParams = new URLSearchParams(window.location.search);
-        let id = searchParams.get("id");
-        axios.get('http://localhost:3000/comment/'+ id,
-        {
-            headers: {
-                'Authorization': `Bearer ${authToken}` 
-            }
-        })
-        .then(res => {
-            this.comments = res.data;
-            console.log(res.data);
-        })
-        .catch(err => console.log(err));
+        getThread(){
+            const authToken = localStorage.getItem('token');// Obliger de mettre la constante authToken à chaque requête axios (si mit en début de script conserve l'ancien token malgré une reconnection)
+            let searchParams = new URLSearchParams(window.location.search);
+            let id = searchParams.get("id");
+            axios.get('http://localhost:3000/comment/'+ id,
+            {
+                headers: {
+                    'Authorization': `Bearer ${authToken}` 
+                }
+            })
+            .then(res => {
+                this.thread = res.data;
+                console.log(res.data);
+            })
+            .catch(err => console.log(err));
+            },
+
+        postNewComment(){
+            const authToken = localStorage.getItem('token');// Obliger de mettre la constante authToken à chaque requête axios.post (si mit en début de script conserve l'ancien token malgré une reconnection)
+            let searchParams = new URLSearchParams(window.location.search);
+            let id = searchParams.get("id");
+            axios.post('http://localhost:3000/comment/', {
+                userId: +localStorage.getItem('userId'),//le + devant le localStorage permet d'envoyer userId en type:Number
+                postId: id,
+                comment: this.comment
+            }, {    
+                headers: {
+                    'Authorization': `Bearer ${authToken}` 
+                }
+            })
+            .then((res) => {
+                this.$router.push('/')
+                console.log(res)
+            })
+            .catch(error => console.log(error));
         },
     },
 
     beforeMount(){
         this.getOnePost();
-        this.getAllComments();
+        this.getThread();
     }
 }
 </script>

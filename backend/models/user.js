@@ -3,10 +3,11 @@ const connection = require('../connection/database');
 function User(req) {
     this.email = req.email; 
     this.password = req.password;
+    this.pseudo = req.pseudo;
 };
 
 User.createUser = (newUser, res) => {
-    connection.query("INSERT INTO user SET email= ?, password = ?", [newUser.email,newUser.password], (error, result) =>{
+    connection.query("INSERT INTO user SET email= ?, password = ?, pseudo= ?", [newUser.email,newUser.password, newUser.pseudo], (error, result) =>{
 
         if(error) {
             res(error, null);

@@ -1,7 +1,7 @@
 <template>
     <Header :navbars ="navbars"/>
     <div v-for="post in posts" :key="post" class="post">
-        <router-link :to="{ path: 'post', query: { id: post.id }}">
+        <router-link :to="{ path: 'post', query: { id: post.id }}" class="post_link">
             <h2>{{ post.title }}</h2>
             <p>{{ post.text }}</p>
         </router-link>
@@ -10,8 +10,6 @@
 
 <script>
 const axios = require('axios');
-const authToken = localStorage.getItem('token');
-const time = +localStorage.getItem('time');
 
 import Header from '../components/Header'
 
@@ -32,6 +30,7 @@ export default {
 
     methods: {
         validateConnexion() {
+            const time = +localStorage.getItem('time');
             if (Date.now() - time >= 86400000) { // vérifie si le token à dépasser ça durer de vie de 24h
                 this.$router.replace('/login')
             } else {
@@ -40,6 +39,7 @@ export default {
         },
 
         getAllposts(){
+            const authToken = localStorage.getItem('token');
             axios.get('http://localhost:3000/',
             {
                 headers: {
@@ -66,9 +66,18 @@ export default {
         background-color: white;
         border-radius: 10px;
         text-align: initial;
+        &_link {
+            color: black;
+            text-decoration: none;
+            :hover {
+                color: black;
+            }
+        }
     }
 
     h2 {
         margin-bottom: 15px;
     }
+
+
 </style>

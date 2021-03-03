@@ -40,7 +40,7 @@ export default {
                 password: this.password
             })
             .then((res) => {
-                this.validateConexion(res)
+                this.validateConexion(res);
                 this.$router.push('/');
                 console.log(res);
             })
