@@ -31,9 +31,11 @@ exports.loginUser = (req, res) => {
    
     if (result != null) {
       if (result.length > 0) {
+        console.log(result);
         return res.status(200).json({
           userId: result[0].id, //user[0].id permet de selectionner id dans un format RowDataPacket
-          token: jwt.sign({ userId: result[0].id}, privateKey, { expiresIn: '24h'})
+          token: jwt.sign({ userId: result[0].id}, privateKey, { expiresIn: '24h'}),
+          privilege: result[0].privilege
         });
       } 
       res.status(400).send("Email ou mot de passe incorrect");

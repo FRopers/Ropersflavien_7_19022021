@@ -10,6 +10,7 @@
                     <router-link class="link" :to="{path: item.router}">{{ item.name }}</router-link>
                 </li>
             </ul>
+            <button v-if="logout" v-on:click="launchLogout()">Déconnexion</button>
         </nav>
     </header>
 </template>
@@ -18,9 +19,15 @@
 
 export default {
     name: 'Header',
-    props: ['navbars']
-}
+    props: ['navbars', 'logout'],
 
+    methods: {
+        launchLogout() {
+            localStorage.removeItem('user');
+            this.$router.replace('/login'); 
+        },
+    },
+}
 </script>
 
 <style lang="scss">

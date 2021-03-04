@@ -29,9 +29,15 @@ exports.threadForOnePosts = (req, res) => {
 // voir gestion d'erreur
 exports.createNewPost = (req, res) => {
   const bodyParse = JSON.parse(req.body.post);
-  let newPost = new Post(bodyParse);
+
+  let newPost = new Post({
+    userId: bodyParse.userId,
+    title: bodyParse.title, 
+    text: bodyParse.text,
+    imageUrl: `${req.protocol}://${req.get('host')}/images/${req.file.filename}`,
+  });
+  
   Post.createPost(newPost, (error, result) => {
-    
     if (error) {
       res.send(error);
     }       

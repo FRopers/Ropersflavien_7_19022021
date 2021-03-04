@@ -1,7 +1,11 @@
 <template>
-    <Header :navbars ="navbars"/>
+        <Header 
+        :navbars="navbars"
+        :logout="logout"
+    />
     <div class="post">
         <div>
+            <button v-if="admin">x</button>
             <h2>{{ post.title }}</h2>
             <p>{{ post.text }}</p>
         </div>
@@ -20,6 +24,7 @@
         </div>
 
         <div v-for="item in thread" :key="item" >
+            <button v-if="admin">x</button>
             <p>{{ item.pseudo }}</p>
             <p>{{ item.comment }}</p>
         </div>
@@ -41,7 +46,9 @@ export default {
         return {
             post: "", 
             comment: "",
-            thread: [],          
+            admin: false,
+            thread: [], 
+            logout: false,         
             navbars: [
                 {name: 'Créer un post', router: 'createpost'}
             ]
@@ -49,14 +56,21 @@ export default {
     },
 
     methods: {
+        verificatedPrivilege(storage) {
+            if (storage.privilege === "ADMIN") {
+                this.admin = true;
+            }
+        },
+
         getOnePost(){
-            const authToken = localStorage.getItem('token');
+            const storage = JSON.parse(localStorage.getItem('user'));
+            this.verificatedPrivilege(storage);
             let searchParams = new URLSearchParams(window.location.search);
             let id = searchParams.get("id");
             axios.get('http://localhost:3000/'+ id,
             {
                 headers: {
-                    'Authorization': `Bearer ${authToken}` 
+                    'Authorization': `Bearer ${storage.token}` 
                 }
             })
             .then(res => {
@@ -66,13 +80,13 @@ export default {
         },
 
         getThread(){
-            const authToken = localStorage.getItem('token');// Obliger de mettre la constante authToken à chaque requête axios (si mit en début de script conserve l'ancien token malgré une reconnection)
+            const storage = JSON.parse(localStorage.getItem('user'));// Obliger de mettre la constante storage à chaque requête axios (si mit en début de script conserve les anciennes valeurs du localStorage malgré une reconnection)
             let searchParams = new URLSearchParams(window.location.search);
             let id = searchParams.get("id");
             axios.get('http://localhost:3000/comment/'+ id,
             {
                 headers: {
-                    'Authorization': `Bearer ${authToken}` 
+                    'Authorization': `Bearer ${storage.token}` 
                 }
             })
             .then(res => {
@@ -83,16 +97,16 @@ export default {
             },
 
         postNewComment(){
-            const authToken = localStorage.getItem('token');// Obliger de mettre la constante authToken à chaque requête axios.post (si mit en début de script conserve l'ancien token malgré une reconnection)
+            const storage = JSON.parse(localStorage.getItem('user'));
             let searchParams = new URLSearchParams(window.location.search);
             let id = searchParams.get("id");
             axios.post('http://localhost:3000/comment/', {
-                userId: +localStorage.getItem('userId'),//le + devant le localStorage permet d'envoyer userId en type:Number
+                userId: storage.userId,
                 postId: id,
                 comment: this.comment
             }, {    
                 headers: {
-                    'Authorization': `Bearer ${authToken}` 
+                    'Authorization': `Bearer ${storage.token}` 
                 }
             })
             .then((res) => {
@@ -111,8 +125,6 @@ export default {
 </script>
 
 <style lang="scss">
-    h3 {
-        margin-top: 10px;
-    }
+
 
 </style>

@@ -11,11 +11,8 @@ export default {
 </script>
 
 <style lang="scss">
-body {
-  background-color: silver;
-}
-
-#app {
-  text-align: center;
-}
+@import "./styles/utils/variables";
+@import "./styles/utils/mixin";
+@import "./styles/base/base";
+@import "./styles/component/buttons";
 </style>

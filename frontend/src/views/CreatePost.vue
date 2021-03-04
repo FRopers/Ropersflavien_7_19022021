@@ -1,5 +1,8 @@
 <template>
-    <Header :navbars ="navbars"/>
+    <Header 
+        :navbars="navbars"
+        :logout="logout"
+    />
     <div class="post">
         <form @submit.prevent='postNewPost()'>
             <div>
@@ -32,14 +35,15 @@ export default {
     data() {
         return {
             post: {
-                userId: +localStorage.getItem('userId'),
+                userId: "",
                 title: "",
                 text: "",
             },
-            image:"",
+            image: null,
+            logout: true,
             navbars: [
                 {name: 'Accueil', router: '/'},
-            ]
+            ]        
         }
     },
 
@@ -50,18 +54,19 @@ export default {
         },
 
         postNewPost(){
-            const authToken = localStorage.getItem('token');
+            const storage = JSON.parse(localStorage.getItem('user')); 
+            this.post.userId = storage.userId;
             const formData = new FormData();
             formData.append('post', JSON.stringify(this.post));
             formData.append('image', this.image)
             axios.post('http://localhost:3000/', formData, {
     
                     headers: {
-                        'Authorization': `Bearer ${authToken}` 
+                        'Authorization': `Bearer ${storage.token}` 
                     }
             })
             .then((res) => {
-                this.image = ''; //renitialise la variable, à tester sans
+                this.image = null; //renitialise la variable, à tester sans
                 this.$router.push('/')
                 console.log(res)
             })

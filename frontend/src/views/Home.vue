@@ -1,9 +1,13 @@
 <template>
-    <Header :navbars ="navbars"/>
+        <Header 
+        :navbars="navbars"
+        :logout="logout"
+    />
     <div v-for="post in posts" :key="post" class="post">
         <router-link :to="{ path: 'post', query: { id: post.id }}" class="post_link">
             <h2>{{ post.title }}</h2>
             <p>{{ post.text }}</p>
+            <img :src="post.url_image" />
         </router-link>
     </div>
 </template>
@@ -22,6 +26,7 @@ export default {
     data() {
         return {
             posts: [],
+            logout: true,
             navbars: [
                 {name: 'Créer un post', router: 'createpost',},
             ]
@@ -30,8 +35,8 @@ export default {
 
     methods: {
         validateConnexion() {
-            const time = +localStorage.getItem('time');
-            if (Date.now() - time >= 86400000) { // vérifie si le token à dépasser ça durer de vie de 24h
+            const storage = JSON.parse(localStorage.getItem('user')); 
+            if (storage === null || Date.now() - storage.time >= 86400000) { // vérifie si le token à dépasser ça durer de vie de 24h
                 this.$router.replace('/login')
             } else {
                 this.getAllposts();
@@ -39,14 +44,16 @@ export default {
         },
 
         getAllposts(){
-            const authToken = localStorage.getItem('token');
+            const storage = JSON.parse(localStorage.getItem('user')); 
             axios.get('http://localhost:3000/',
             {
                 headers: {
-                    'Authorization': `Bearer ${authToken}` 
+                    'Authorization': `Bearer ${storage.token}` 
                 }
             })
-            .then(res => this.posts = res.data)
+            .then(res => {
+                this.posts = res.data
+                })
             .catch(err => console.log(err));
         },
     },
@@ -74,10 +81,4 @@ export default {
             }
         }
     }
-
-    h2 {
-        margin-bottom: 15px;
-    }
-
-
 </style>

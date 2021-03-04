@@ -4,10 +4,11 @@ function User(req) {
     this.email = req.email; 
     this.password = req.password;
     this.pseudo = req.pseudo;
+    this.privilege = req.privilege;
 };
 
 User.createUser = (newUser, res) => {
-    connection.query("INSERT INTO user SET email= ?, password = ?, pseudo= ?", [newUser.email,newUser.password, newUser.pseudo], (error, result) =>{
+    connection.query("INSERT INTO user SET email= ?, password = ?, pseudo= ?, privilege = ?", [newUser.email,newUser.password, newUser.pseudo, newUser.privilege], (error, result) =>{
 
         if(error) {
             res(error, null);

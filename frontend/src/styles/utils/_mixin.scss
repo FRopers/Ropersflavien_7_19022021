@@ -1,0 +1,12 @@
+@mixin btn_primary {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    border: transparent;
+    height: 40px;
+    width: 110px;
+    border-radius: 22px;
+    color: $background_color_txt;
+    background-color: #0079d3;
+    outline: none;
+}

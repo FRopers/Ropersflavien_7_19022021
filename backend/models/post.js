@@ -4,6 +4,7 @@ function Post(req) {
     this.userId = req.userId;
     this.title = req.title; 
     this.text = req.text;
+    this.imageUrl = req.imageUrl;
 };
 
 Post.getAllPosts = (res) => {
@@ -28,7 +29,7 @@ Post.getOnePost = (postId, res) => {
 };
 
 Post.createPost = (newPost, res) => {
-    connection.query("INSERT INTO post SET id_user= ?, title = ?, text = ?", [newPost.userId,newPost.title,newPost.text], (error, result) =>{
+    connection.query("INSERT INTO post SET id_user= ?, title = ?, text = ?, url_image = ?", [newPost.userId, newPost.title, newPost.text, newPost.imageUrl], (error, result) =>{
 
         if(error) {
             res(error, null);

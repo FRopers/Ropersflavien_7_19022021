@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require("body-parser");
+const path = require('path');
 
 const app = express();
 
@@ -15,6 +16,8 @@ app.use(bodyParser.json());
 const postsRoutes = require('./routes/post');
 const usersRoutes = require('./routes/user');
 const commentsRoutes = require('./routes/comment');
+
+app.use('/images', express.static(path.join(__dirname, 'images')));
 
 app.use('/', usersRoutes);
 app.use('/', postsRoutes);
