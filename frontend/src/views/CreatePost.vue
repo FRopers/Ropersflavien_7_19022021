@@ -1,21 +1,33 @@
 <template>
-    <Header 
-        :navbars="navbars"
-        :logout="logout"
-    />
-    <div class="post">
-        <form @submit.prevent='postNewPost()'>
-            <div>
-                <label for="title">Titre</label>
-                <input type="text" id="title" v-model="post.title" required>
+    <div>
+        <Header 
+            :navbars="navbars"
+            :logout="logout"
+        />
+        <div class="post body flex">
+            <div class="titre-publication">
+                <h2>Créer un publication</h2>
             </div>
-            <div>
-                <label for="text" placeholder>Texte</label>
-                <textarea id="text" v-model="post.text" required></textarea>
-            </div>
-            <Upload @image_uploaded="saveImage"/>
-            <button type="submit">Envoyer</button>
-        </form>
+            <form @submit.prevent='postNewPost()' class="form-createpost">
+                <div>
+                    <label for="text"></label>
+                    <textarea class="create-post" id="text" v-model="post.text" placeholder="Que voulez vous dire?" required></textarea>
+                </div>
+
+                <div>
+                    <img v-if="imageUrl" :src="imageUrl" :alt="imageName"/>
+                </div>
+               
+                <div class="create-post_ajout">
+                    <p>Ajouter à votre publication</p>
+                    <Upload 
+                        @image_uploaded="saveImage"
+                    />
+                </div>
+
+                <button class="publier" type="submit">Publier</button>
+            </form>
+        </div>
     </div>
 </template>
 
@@ -40,6 +52,8 @@ export default {
                 text: "",
             },
             image: null,
+            imageName: null,
+            imageUrl: null,
             logout: true,
             navbars: [
                 {name: 'Accueil', router: '/'},
@@ -51,6 +65,8 @@ export default {
 
         saveImage(payload) {
             this.image = payload.image;
+            this.imageName = payload.image_name;
+            this.imageUrl = payload.image_url;
         },
 
         postNewPost(){
@@ -76,8 +92,36 @@ export default {
 }
 </script>
 
-<style lang="scss" scoped>
-    form {
+<style lang="scss">
+    .titre-publication{
+        display: flex;
+        justify-content: center;
+        border-bottom: 1px solid #e4e6eb;
+    }
+    .create-post {
+        height: 150px;
+        background-color: white;
+        border-radius: 0px;
+        border: none;
+        &_ajout{
+            margin-bottom: 20px;
+            border: 1px solid #e4e6eb;
+            padding: 10px;
+            display: flex;
+            justify-content: space-between;
+        }
+    }
+    .publier {
+        margin: auto;     
+        background-color: #0079d3;
+        color: white;
+        width: 30%;
+        height: 35px;
+        border: transparent;
+        border-radius: 3px;
+    }
+
+    .form-createpost {
         width: 100%;
     }
 </style>

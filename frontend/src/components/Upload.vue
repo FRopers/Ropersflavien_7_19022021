@@ -1,10 +1,7 @@
 <template>
     <div>
-        <label for="image">Ajouter image</label>
+        <label for="image"><font-awesome-icon icon="file-image" /></label>
         <input type="file" id="image" accept="image/*" @change="uploadFile" />
-        <div>
-            <img v-if="imageUrl" :src="imageUrl" :alt="imageName"/>
-        </div>
     </div>
 </template>
 
@@ -23,11 +20,12 @@
         methods: {
             uploadFile(event) {
                 const file = event.target.files[0];
-                this.$emit('image_uploaded',{
+                
+                this.$emit('image_uploaded', {
                     image: file,
+                    image_name: file.name.split('.')[0],
+                    image_url: URL.createObjectURL(file)
                 });
-                this.imageName = file.name.split('.')[0];
-                this.imageUrl = URL.createObjectURL(file);
             }
         }
     } 
@@ -41,16 +39,7 @@
         display: none;
     }
     label {
-        display: flex;
-        align-items: center;
-        justify-content: center;
-        font-size: 0.9em;
-        font-weight: 700;
-        color: white;
-        width: 100px;
-        height: 25px;
-        border-radius: 5px;
-        background-color: #0079d3;
-        outline: none;
+        color: #0079d3;
+        font-size: 1.3em ;
     }
 </style>

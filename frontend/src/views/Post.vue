@@ -1,32 +1,36 @@
 <template>
+    <div>
         <Header 
-        :navbars="navbars"
-        :logout="logout"
-    />
-    <div class="post">
-        <div>
-            <button v-if="admin">x</button>
-            <h2>{{ post.title }}</h2>
-            <p>{{ post.text }}</p>
-        </div>
-
-        <form @submit.prevent='postNewComment()'><!-- réponse marine -->
-            <div>
-                <label for="comment"></label>
-                <textarea id="comment" v-model="comment" placeholder="Ajouter un commentaire" required></textarea>
+            :navbars="navbars"
+            :logout="logout"
+        />
+        <div class="post body flex">
+            <div class="delete">
+            <button v-if="admin" class="delete_form">x</button>
             </div>
-            
-            <button type="submit">Ajouter</button>
-        </form>
-        
-        <div>
-            <h3>Commentaires:</h3>
-        </div>
+            <div >
+                <h2>{{ post.title }}</h2>
+                <p>{{ post.text }}</p>
+            </div>
 
-        <div v-for="item in thread" :key="item" >
-            <button v-if="admin">x</button>
-            <p>{{ item.pseudo }}</p>
-            <p>{{ item.comment }}</p>
+            <form class="form-comment">
+                <div class="textarea">
+                    <label for="comment"></label>
+                    <textarea id="comment" placeholder="Écriver un commentaire" v-model="comment" v-on:keyup.enter="postNewComment()" required></textarea>
+                    <p class="instruction">Touchez Entrée pour publier votre commentaire.</p>
+                </div>
+            </form>
+
+            <div v-for="item in thread" :key="item" >
+                <div class="delete">
+                    <button v-if="admin" class="delete_form">x</button>
+                </div>
+
+                <div class="post-comment">
+                    <p>{{ item.pseudo }}</p>
+                    <p>{{ item.comment }}</p>
+                </div>
+            </div>
         </div>
     </div>
 </template>
@@ -125,6 +129,47 @@ export default {
 </script>
 
 <style lang="scss">
-
+.delete {
+    display: flex;
+    justify-content: flex-end;
+    &_form{
+        display: flex;
+        justify-content: center;
+        padding-top: 2px;
+        width: 20px;
+        height: 20px;
+        border-radius: 20px;
+        background-color: red;
+        color: white;
+        font-weight: 700;
+        border: none;
+        outline: none;
+    }
+}
+.flex {
+    display: flex;
+    flex-direction: column;
+}
+.form-comment {
+    margin-top: 20px;
+    width: 100%;
+}
+.instruction {
+    font-size: 0.7em;
+}
+textarea {
+    resize: none;
+    padding: 12px 0 12px 8px;
+    border-radius: 15px;
+    width: 98.5%;
+    border: transparent;
+    background-color: #f0f2f5;
+    outline: none;
+}
+.post-comment {
+    padding: 8px 12px;
+    border-radius: 15px;
+    background-color: #f0f2f5;
+}
 
 </style>
