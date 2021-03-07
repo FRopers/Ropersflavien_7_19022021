@@ -6,12 +6,14 @@
         />
         <div class="post body flex">
             <div class="delete">
-            <button v-if="admin" class="delete_form">x</button>
+                <button v-if="admin" @click="deletePost()" class="delete_form">x</button>
             </div>
             <div >
                 <h2>{{ post.title }}</h2>
                 <p>{{ post.text }}</p>
             </div>
+
+            <img v-if="post.url_image !== null" :src="post.url_image" />
 
             <form class="form-comment">
                 <div class="textarea">
@@ -21,9 +23,9 @@
                 </div>
             </form>
 
-            <div v-for="item in thread" :key="item" >
+            <div v-for="item in thread" :key="item.id" >
                 <div class="delete">
-                    <button v-if="admin" class="delete_form">x</button>
+                    <button v-if="admin" @click="deleteComment(item.id)" class="delete_form">x</button>
                 </div>
 
                 <div class="post-comment">
@@ -114,10 +116,45 @@ export default {
                 }
             })
             .then((res) => {
-                this.$router.push('/')
+                this.$router.go(0)
                 console.log(res)
             })
             .catch(error => console.log(error));
+        },
+
+        deletePost(){
+            const storage = JSON.parse(localStorage.getItem('user'));
+            let searchParams = new URLSearchParams(window.location.search);
+            let id = searchParams.get("id");
+            axios.delete('http://localhost:3000/'+ id,
+            {
+                headers: {
+                    'Authorization': `Bearer ${storage.token}` 
+                },
+                data: {
+                    imageUrl: this.post.url_image
+                }
+            })
+            .then((res) => {
+                this.$router.push('/')
+                console.log(res)
+            })
+            .catch(err => console.log(err));
+        },
+
+        deleteComment(commentId){
+            const storage = JSON.parse(localStorage.getItem('user'));
+            axios.delete('http://localhost:3000/comment/' + commentId,
+            {
+                headers: {
+                    'Authorization': `Bearer ${storage.token}` 
+                },
+            })
+            .then((res) => {
+                this.$router.go(0); //lent à voir s'il y a mieu
+                console.log(res);
+            })
+            .catch(err => console.log(err));
         },
     },
 

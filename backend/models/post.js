@@ -39,4 +39,14 @@ Post.createPost = (newPost, res) => {
     });   
 };
 
+Post.deleteOnePost = (postId, res) => {   
+    connection.query("DELETE FROM post WHERE id= ?", [postId], (error, result) => {
+
+        if(error) {
+            res(error, null);
+        }
+        res(null, result);
+    });
+};
+
 module.exports= Post;

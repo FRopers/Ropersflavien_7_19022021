@@ -25,4 +25,17 @@ exports.createNewComment = (req, res) => {
       res.json(result);
     });
 };
+
+// Recherche et supprime le commentaire
+// voir gestion d'erreur
+exports.deleteOneCommentInPost = (req, res) => {
+  let commentId = req.params.id;
+  Comment.deleteOneComment(commentId, (error, result) => { 
+  
+    if (error) {
+      res.send(error);
+    }       
+    res.json(result);
+  });
+};
   
