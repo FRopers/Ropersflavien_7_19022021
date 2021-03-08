@@ -37,7 +37,6 @@ exports.createNewPost = (req, res) => {
 
   let newPost = new Post({
     userId: bodyParse.userId,
-    title: bodyParse.title, 
     text: bodyParse.text,
     imageUrl: imageUrl,
   });

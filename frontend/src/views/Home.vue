@@ -4,7 +4,7 @@
         <div v-for="post in posts" :key="post.id" class="post">
             <router-link :to="{ path: 'post', query: { id: post.id }}" class="post_link">
                 <div class="body">
-                    <h2>{{ post.title }}</h2>
+                    <h2>{{ post.pseudo }}</h2>
                     <p>{{ post.text }}</p>
                 </div>
 
@@ -54,6 +54,7 @@ export default {
             })
             .then(res => {
                 this.posts = res.data
+                console.log(this.posts);
                 })
             .catch(err => console.log(err));
         },

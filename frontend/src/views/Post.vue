@@ -9,7 +9,7 @@
                 <button v-if="admin" @click="deletePost()" class="delete_form">x</button>
             </div>
             <div >
-                <h2>{{ post.title }}</h2>
+                <h2>{{ post.pseudo }}</h2>
                 <p>{{ post.text }}</p>
             </div>
 

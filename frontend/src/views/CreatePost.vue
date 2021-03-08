@@ -48,7 +48,6 @@ export default {
         return {
             post: {
                 userId: "",
-                title: "",
                 text: "",
             },
             image: null,

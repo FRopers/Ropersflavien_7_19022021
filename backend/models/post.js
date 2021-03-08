@@ -2,13 +2,12 @@ const connection = require('../connection/database');
 
 function Post(req) {
     this.userId = req.userId;
-    this.title = req.title; 
     this.text = req.text;
     this.imageUrl = req.imageUrl;
 };
 
 Post.getAllPosts = (res) => {
-    connection.query("Select * from post", (error, result) => {
+    connection.query("SELECT post.text, post.url_image, post.id, user.pseudo FROM post, user WHERE post.id AND post.id_user = user.id", (error, result) => {
 
         if(error) {
             res(error, null); //null utile lors de l'appelle de la fonction dans le controller exemple ligne:4 Post.getAllPosts((error, result) => { , result devient null avec cette ligne. 
@@ -19,7 +18,7 @@ Post.getAllPosts = (res) => {
 };
 
 Post.getOnePost = (postId, res) => {
-    connection.query("Select * FROM post WHERE id= ?", [postId], (error, result) => {
+    connection.query("SELECT post.text, post.url_image, post.id, user.pseudo FROM post, user WHERE post.id = ? AND post.id_user = user.id", [postId], (error, result) => {
 
         if(error) {
             res(error, null);
@@ -29,7 +28,7 @@ Post.getOnePost = (postId, res) => {
 };
 
 Post.createPost = (newPost, res) => {
-    connection.query("INSERT INTO post SET id_user= ?, title = ?, text = ?, url_image = ?", [newPost.userId, newPost.title, newPost.text, newPost.imageUrl], (error, result) =>{
+    connection.query("INSERT INTO post SET id_user= ?, text = ?, url_image = ?", [newPost.userId, newPost.text, newPost.imageUrl], (error, result) =>{
 
         if(error) {
             res(error, null);
