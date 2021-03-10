@@ -3,6 +3,7 @@ import VueRouter from 'vue-router'
 import Home from '../views/Home.vue'
 import Post from '../views/Post.vue'
 import CreatePost from '../views/CreatePost.vue'
+import Params from '../views/Params.vue'
 import Login from '../views/Login.vue'
 import Signup from '../views/Signup.vue'
 
@@ -17,7 +18,7 @@ const routes = [
 
   {
     path: '/post',
-    name: "post",
+    name: "Post",
     component: Post
   },
 
@@ -25,6 +26,12 @@ const routes = [
     path: "/createpost",
     name: "CreatePost",
     component: CreatePost
+  },
+
+  {
+    path: '/params',
+    name: "params",
+    component: Params
   },
 
   {

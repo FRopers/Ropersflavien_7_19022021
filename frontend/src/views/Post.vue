@@ -1,36 +1,45 @@
 <template>
     <div>
-        <Header 
-            :navbars="navbars"
-            :logout="logout"
-        />
-        <div class="post body flex">
-            <div class="delete">
-                <button v-if="admin" @click="deletePost()" class="delete_form">x</button>
+        <Header />
+        <div class="post">
+            <div class="post-delete">
+                <font-awesome-icon  icon="times-circle" v-if="admin" @click="deletePost()" class="post-delete_icone" />
             </div>
             <div >
-                <h2>{{ post.pseudo }}</h2>
+                <div class="post-avatar">
+                    <div><img :src= post.avatar alt="avatar utilisateur"></div>
+                    <h2>{{ post.pseudo }}</h2>
+                </div>
+
                 <p>{{ post.text }}</p>
             </div>
 
             <img v-if="post.url_image !== null" :src="post.url_image" />
 
-            <form class="form-comment">
-                <div class="textarea">
+            <form class="post-edit">
+                <div>
                     <label for="comment"></label>
                     <textarea id="comment" placeholder="Écriver un commentaire" v-model="comment" v-on:keyup.enter="postNewComment()" required></textarea>
-                    <p class="instruction">Touchez Entrée pour publier votre commentaire.</p>
+                    <p>Touchez Entrée pour publier votre commentaire.</p>
                 </div>
             </form>
 
             <div v-for="item in thread" :key="item.id" >
-                <div class="delete">
-                    <button v-if="admin" @click="deleteComment(item.id)" class="delete_form">x</button>
-                </div>
-
                 <div class="post-comment">
-                    <p>{{ item.pseudo }}</p>
-                    <p>{{ item.comment }}</p>
+                    <div class="post-comment-avatar">
+                        <div>
+                            <img :src= item.avatar alt="avatar utilisateur" class="avatar_img">
+                        </div>
+                    </div>
+
+                    <div class="post-comment-message">
+                        <h3>{{ item.pseudo }}</h3>
+                        <p>{{ item.comment }}</p>
+                    </div>
+
+                    <div class="post-delete">
+                        <font-awesome-icon  icon="times-circle" v-if="admin" @click="deleteComment(item.id)" class="post-delete_icone" />
+                    </div>
                 </div>
             </div>
         </div>
@@ -53,15 +62,21 @@ export default {
             post: "", 
             comment: "",
             admin: false,
-            thread: [], 
-            logout: false,         
-            navbars: [
-                {name: 'Créer un post', router: 'createpost'}
-            ]
+            thread: [],
         }
     },
 
     methods: {
+        validateConnexion() {
+            const storage = JSON.parse(localStorage.getItem('user')); 
+            if (storage === null || Date.now() - storage.time >= 86400000) {
+                this.$router.replace('/login')
+            } else {
+                this.getOnePost();
+                this.getThread();
+            }
+        },
+
         verificatedPrivilege(storage) {
             if (storage.privilege === "ADMIN") {
                 this.admin = true;
@@ -97,7 +112,7 @@ export default {
             })
             .then(res => {
                 this.thread = res.data;
-                console.log(res.data);
+                console.log("thread:", res.data);
             })
             .catch(err => console.log(err));
             },
@@ -132,7 +147,8 @@ export default {
                     'Authorization': `Bearer ${storage.token}` 
                 },
                 data: {
-                    imageUrl: this.post.url_image
+                    imageUrl: this.post.url_image,
+                    userId: storage.userId
                 }
             })
             .then((res) => {
@@ -149,6 +165,9 @@ export default {
                 headers: {
                     'Authorization': `Bearer ${storage.token}` 
                 },
+                data: {
+                    userId: storage.userId,
+                }
             })
             .then((res) => {
                 this.$router.go(0); //lent à voir s'il y a mieu
@@ -159,54 +178,73 @@ export default {
     },
 
     beforeMount(){
-        this.getOnePost();
-        this.getThread();
+        this.validateConnexion();
     }
 }
 </script>
 
 <style lang="scss">
-.delete {
+@import "../styles/utils/variables";
+@import "../styles/utils/mixin";
+
+.post {
+    @include display_message(35%);
+    padding: 20px;
+}
+
+.post-delete {
     display: flex;
     justify-content: flex-end;
-    &_form{
-        display: flex;
-        justify-content: center;
-        padding-top: 2px;
-        width: 20px;
-        height: 20px;
-        border-radius: 20px;
-        background-color: red;
-        color: white;
-        font-weight: 700;
-        border: none;
-        outline: none;
+    margin-left: -10px;
+    &_icone {
+        color: $button_color_secondary;
     }
 }
-.flex {
+
+.post-avatar {
     display: flex;
-    flex-direction: column;
+    & div{
+        @include avatar_border(40px);
+    }
+    & img {
+        @include avatar_image;
+    }
+    & h2 {
+        @include avatar_pseudo(40px, 1.05em);
+    }
 }
-.form-comment {
-    margin-top: 20px;
+
+.post-edit {
+    margin: 20px 0;
     width: 100%;
+    & p {
+        font-size: 0.7em;
+    }
 }
-.instruction {
-    font-size: 0.7em;
-}
-textarea {
-    resize: none;
-    padding: 12px 0 12px 8px;
-    border-radius: 15px;
-    width: 98.5%;
-    border: transparent;
-    background-color: #f0f2f5;
-    outline: none;
-}
+
 .post-comment {
-    padding: 8px 12px;
+    display: flex;
+    margin-top: 10px; 
+}
+
+.post-comment-avatar {
+    & div{
+        @include avatar_border(30px);
+    }
+    & img {
+        @include avatar_image;
+    }
+}
+
+.post-comment-message {
+    padding: 8px 10px 5px 10px;
     border-radius: 15px;
-    background-color: #f0f2f5;
+    background-color: $background_color_secondary;
+    font-size: 0.85em;
+    & h3 {
+        font-size: 0.95em;
+        margin-bottom: 8px;
+    }
 }
 
 </style>

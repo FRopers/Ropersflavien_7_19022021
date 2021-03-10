@@ -1,16 +1,20 @@
 <template>
     <div>
         <Header />
-        <div v-for="post in posts" :key="post.id" class="post">
-            <router-link :to="{ path: 'post', query: { id: post.id }}" class="post_link">
-                <div class="body">
-                    <h2>{{ post.pseudo }}</h2>
+        <section v-for="post in posts" :key="post.id" class="home">
+            <router-link :to="{ path:'post', query: { id: post.id }}" class="home_link">
+                <div class="home-post">
+                    <div class="home-avatar">
+                        <div><img :src= post.avatar alt="avatar utilisateur"></div>
+                        <h2>{{ post.pseudo }}</h2>
+                    </div>
+
                     <p>{{ post.text }}</p>
                 </div>
 
                 <img v-if="post.url_image !== null" :src="post.url_image" />
             </router-link>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -28,9 +32,6 @@ export default {
     data() {
         return {
             posts: [],
-            navbars: [
-                {name: 'Créer un post', router: 'createpost',},
-            ]
         }
     },
 
@@ -67,26 +68,35 @@ export default {
 </script>
 
 <style lang="scss">
-    .post{
-        margin: auto;
-        margin-top: 20px;
-        width: 500px;
-        background-color: white;
-        border-radius: 5px;
-        box-shadow: 0 0 3px #7e7e7e;
-        &_link {
-            color: black;
-            text-decoration: none;
-            :hover {
-                color: black;
-            }
+@import "../styles/utils/variables";
+@import "../styles/utils/mixin";
+
+.home{
+    @include display_message(40%);
+    &_link {
+        color: $color_txt_secondary;
+        text-decoration: none;
+        :hover {
+            color: $color_txt_secondary;
         }
     }
-    .body {
-        padding: 16px;
+}
+
+.home-post {
+    padding: 16px;
+}
+
+.home-avatar {
+    display: flex;
+    & div{
+        @include avatar_border(40px);
     }
-    img{
-        width: 100%;
-        border-radius: 0 0 5px 5px
+    & img {
+        @include avatar_image;
     }
+    & h2 {
+        @include avatar_pseudo(40px, 1.05em);
+    }
+}
+
 </style>

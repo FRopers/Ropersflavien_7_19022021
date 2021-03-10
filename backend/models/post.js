@@ -7,7 +7,7 @@ function Post(req) {
 };
 
 Post.getAllPosts = (res) => {
-    connection.query("SELECT post.text, post.url_image, post.id, user.pseudo FROM post, user WHERE post.id AND post.id_user = user.id", (error, result) => {
+    connection.query("SELECT post.text, post.url_image, post.id, user.pseudo, user.avatar FROM post, user WHERE post.id AND post.id_user = user.id", (error, result) => {
 
         if(error) {
             res(error, null); //null utile lors de l'appelle de la fonction dans le controller exemple ligne:4 Post.getAllPosts((error, result) => { , result devient null avec cette ligne. 
@@ -18,7 +18,7 @@ Post.getAllPosts = (res) => {
 };
 
 Post.getOnePost = (postId, res) => {
-    connection.query("SELECT post.text, post.url_image, post.id, user.pseudo FROM post, user WHERE post.id = ? AND post.id_user = user.id", [postId], (error, result) => {
+    connection.query("SELECT post.text, post.url_image, post.id, user.pseudo, user.avatar FROM post, user WHERE post.id = ? AND post.id_user = user.id", [postId], (error, result) => {
 
         if(error) {
             res(error, null);
@@ -34,7 +34,6 @@ Post.createPost = (newPost, res) => {
             res(error, null);
         }
         res(null, result);
-
     });   
 };
 

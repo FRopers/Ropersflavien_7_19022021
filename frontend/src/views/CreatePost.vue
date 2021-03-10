@@ -1,31 +1,28 @@
 <template>
     <div>
-        <Header 
-            :navbars="navbars"
-            :logout="logout"
-        />
-        <div class="post body flex">
-            <div class="titre-publication">
+        <Header />
+        <div class="createpost">
+            <div class="createpost-title">
                 <h2>Créer un publication</h2>
             </div>
-            <form @submit.prevent='postNewPost()' class="form-createpost">
+            <form @submit.prevent='postNewPost()' class="createpost-form">
                 <div>
                     <label for="text"></label>
-                    <textarea class="create-post" id="text" v-model="post.text" placeholder="Que voulez vous dire?" required></textarea>
+                    <textarea id="text" v-model="post.text" placeholder="Que voulez vous dire?" required></textarea>
                 </div>
 
                 <div>
                     <img v-if="imageUrl" :src="imageUrl" :alt="imageName"/>
                 </div>
                
-                <div class="create-post_ajout">
+                <div class="createpost-form_image">
                     <p>Ajouter à votre publication</p>
                     <Upload 
                         @image_uploaded="saveImage"
                     />
                 </div>
 
-                <button class="publier" type="submit">Publier</button>
+                <button class="createpost-button" type="submit">Publier</button>
             </form>
         </div>
     </div>
@@ -40,8 +37,8 @@ import Upload from '../components/Upload'
 export default {
     name: "CreatePost",
         components: {
-        Header,
-        Upload
+            Header,
+            Upload
     },
 
     data() {
@@ -52,15 +49,17 @@ export default {
             },
             image: null,
             imageName: null,
-            imageUrl: null,
-            logout: true,
-            navbars: [
-                {name: 'Accueil', router: '/'},
-            ]        
+            imageUrl: null,      
         }
     },
 
     methods: {
+        validateConnexion() {
+            const storage = JSON.parse(localStorage.getItem('user')); 
+            if (storage === null || Date.now() - storage.time >= 86400000) {
+                this.$router.replace('/login')
+            }
+        },
 
         saveImage(payload) {
             this.image = payload.image;
@@ -88,39 +87,47 @@ export default {
             .catch(error => console.log(error));
         },
     },
+    beforeMount(){
+        this.validateConnexion();
+    }
 }
 </script>
 
 <style lang="scss">
-    .titre-publication{
-        display: flex;
-        justify-content: center;
-        border-bottom: 1px solid #e4e6eb;
-    }
-    .create-post {
+@import "../styles/utils/variables";
+@import "../styles/utils/mixin";
+
+.createpost {
+    @include display_message(35%);
+    padding: 20px;
+}
+
+.createpost-title{
+    display: flex;
+    justify-content: center;
+    border-bottom: 1px solid $border_color;
+}
+
+.createpost-form {
+    width: 100%;
+    & textarea {
         height: 150px;
-        background-color: white;
+        background-color: $background_color_primary;
         border-radius: 0px;
         border: none;
-        &_ajout{
-            margin-bottom: 20px;
-            border: 1px solid #e4e6eb;
-            padding: 10px;
-            display: flex;
-            justify-content: space-between;
-        }
     }
-    .publier {
-        margin: auto;     
-        background-color: #0079d3;
-        color: white;
-        width: 30%;
-        height: 35px;
-        border: transparent;
-        border-radius: 3px;
+    &_image {
+        margin-bottom: 20px;
+        border: 1px solid $border_color;
+        padding: 10px;
+        display: flex;
+        justify-content: space-between;
     }
+}
 
-    .form-createpost {
-        width: 100%;
-    }
+.createpost-button {
+    margin: auto;     
+    @include button_submit(25%)
+}
+
 </style>

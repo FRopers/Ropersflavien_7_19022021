@@ -7,7 +7,20 @@ const privateKey = process.env.JWT_PRIVATEKEY;
 // hash à voir
 // gestion des erreur !!
 exports.createNewUser = (req, res) => {
-  let newUser = new User(req.body);
+  const bodyParse = JSON.parse(req.body.user);
+  let imageUrl = `${req.protocol}://${req.get('host')}/images/default-user-image.png`;
+  if (req.file !== undefined) {
+    imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+  }
+
+  let newUser = new User({
+    email: bodyParse.email,
+    password: bodyParse.password,
+    pseudo: bodyParse.pseudo,
+    avatar: imageUrl,
+    privilege: "user"
+  });
+
   User.createUser(newUser, (error, result) => {
     
     if (error) {
@@ -40,5 +53,31 @@ exports.loginUser = (req, res) => {
       } 
       res.status(400).send("Email ou mot de passe incorrect");
     }
+  });
+};
+
+// Recherche et envoie un utilisateur
+// voir gestion d'erreur
+exports.getOneUser = (req, res) => {
+  let userPseudo = req.query.pseudo;
+  User.getUser(userPseudo, (error, result) => { 
+    
+    if (error) {
+      res.send(error);
+    }       
+    res.json(result);
+  });
+};
+
+// Recherche et supprime un utilisateur
+// voir gestion d'erreur
+exports.deleteOneUser = (req, res) => {
+  let userId = req.params.id;
+  User.deleteUser(userId, (error, result) => { 
+    
+    if (error) {
+      res.send(error);
+    }       
+    res.json(result);
   });
 };

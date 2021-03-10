@@ -1,5 +1,5 @@
 <template>
-    <div>
+    <div class="upload">
         <label for="image"><font-awesome-icon icon="file-image" /></label>
         <input type="file" id="image" accept="image/*" @change="uploadFile" />
     </div>
@@ -31,15 +31,17 @@
     } 
 </script>
 
-<style lang="scss" scoped>
-    div {
+<style lang="scss">
+@import "../styles/utils/variables";
+
+    .upload {
         justify-content: flex-end;
-    }
-    input {
-        display: none;
-    }
-    label {
-        color: #0079d3;
-        font-size: 1.3em ;
+        & input {
+            display: none;
+        }
+        & label {
+            color: $color_txt_tertiary;
+            font-size: 1.3em ;
+        }
     }
 </style>
