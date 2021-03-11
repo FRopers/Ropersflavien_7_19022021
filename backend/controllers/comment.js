@@ -7,9 +7,9 @@ exports.listAllCommentsByPost = (req, res) => {
     Comment.getAllCommentByPost (postId, (error, result) => { 
       
       if (error) {
-        res.send(error);
+        res.status(400).send(error);
       }       
-      res.json(result);
+      res.status(200).json(result);
     });
   };
 
@@ -20,9 +20,9 @@ exports.createNewComment = (req, res) => {
     Comment.createComment(newComment, (error, result) => {
       
       if (error) {
-        res.send(error);
+        res.status(400).send(error);
       }       
-      res.json(result);
+      res.status(201).json(result);
     });
 };
 
@@ -33,9 +33,9 @@ exports.deleteOneCommentInPost = (req, res) => {
   Comment.deleteOneComment(commentId, (error, result) => { 
   
     if (error) {
-      res.send(error);
+      res.status(400).send(error);
     }       
-    res.json(result);
+    res.status(200).json(result);
   });
 };
   

@@ -24,9 +24,9 @@ exports.createNewUser = (req, res) => {
   User.createUser(newUser, (error, result) => {
     
     if (error) {
-      return res.status(401).send(error);//401?
+      return res.status(400).send(error);
     }
-    res.json(result);
+    res.status(201).json(result);
   });
 };
 
@@ -44,7 +44,6 @@ exports.loginUser = (req, res) => {
    
     if (result != null) {
       if (result.length > 0) {
-        console.log(result);
         return res.status(200).json({
           userId: result[0].id, //user[0].id permet de selectionner id dans un format RowDataPacket
           token: jwt.sign({ userId: result[0].id}, privateKey, { expiresIn: '24h'}),
@@ -53,19 +52,33 @@ exports.loginUser = (req, res) => {
       } 
       res.status(400).send("Email ou mot de passe incorrect");
     }
+    res.status(200).send("Connexion réussie");
   });
 };
 
 // Recherche et envoie un utilisateur
 // voir gestion d'erreur
-exports.getOneUser = (req, res) => {
-  let userPseudo = req.query.pseudo;
-  User.getUser(userPseudo, (error, result) => { 
+exports.getUserSearchWithId = (req, res) => {
+  let userId = req.params.id;
+  User.getUserWithId(userId, (error, result) => { 
     
     if (error) {
-      res.send(error);
+      res.status(400).send(error);
     }       
-    res.json(result);
+    res.status(200).json(result);
+  });
+};
+
+// Recherche et envoie un utilisateur
+// voir gestion d'erreur
+exports.getUserSearchWithPseudo = (req, res) => {
+  let userPseudo = req.query.pseudo;
+  User.getUserWithPseudo(userPseudo, (error, result) => { 
+    
+    if (error) {
+      res.status(400).send(error);
+    }       
+    res.status(200).json(result);
   });
 };
 
@@ -76,8 +89,8 @@ exports.deleteOneUser = (req, res) => {
   User.deleteUser(userId, (error, result) => { 
     
     if (error) {
-      res.send(error);
+      res.status(400).send(error);
     }       
-    res.json(result);
+    res.status(200).json(result);
   });
 };

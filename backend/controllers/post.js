@@ -7,9 +7,9 @@ exports.listAllPosts = (req, res) => {
   Post.getAllPosts((error, result) => { 
     
     if (error) {
-      res.send(error);
+      res.status(400).send(error);
     }       
-    res.json(result);
+    res.status(200).json(result);
   });
 };
 
@@ -20,9 +20,9 @@ exports.threadForOnePosts = (req, res) => {
   Post.getOnePost(postId, (error, result) => { 
     
     if (error) {
-      res.send(error);
+      res.status(400).send(error);
     }       
-    res.json(result);
+    res.status(200).json(result);
   });
 };
 
@@ -43,9 +43,9 @@ exports.createNewPost = (req, res) => {
   
   Post.createPost(newPost, (error, result) => {
     if (error) {
-      res.send(error);
+      res.status(400).send(error);
     }       
-    res.json(result);
+    res.status(201).json(result);
   });
 };
 
@@ -56,9 +56,9 @@ exports.deleteOnePostWithComments = (req, res) => {
   Post.deleteOnePost(postId, (error, result) => { 
   
     if (error) {
-      res.send(error);
+      res.status(400).send(error);
     }       
-    res.json(result);
+    res.status(200).json(result);
   });
 
   if (req.body.imageUrl !== null) {

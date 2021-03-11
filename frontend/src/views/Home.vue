@@ -12,7 +12,9 @@
                     <p>{{ post.text }}</p>
                 </div>
 
-                <img v-if="post.url_image !== null" :src="post.url_image" />
+                <div class="home-image">
+                    <img v-if="post.url_image !== null" :src="post.url_image" />
+                </div>
             </router-link>
         </section>
     </div>
@@ -70,6 +72,9 @@ export default {
 <style lang="scss">
 @import "../styles/utils/variables";
 @import "../styles/utils/mixin";
+.flex {
+    display:flex;
+}
 
 .home{
     @include display_message(40%);
@@ -96,6 +101,13 @@ export default {
     }
     & h2 {
         @include avatar_pseudo(40px, 1.05em);
+    }
+}
+
+.home-image {
+    display: flex;
+    & img {
+        border-radius: 0 0 5px 5px;
     }
 }
 

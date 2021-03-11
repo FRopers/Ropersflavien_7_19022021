@@ -30,8 +30,8 @@ User.login = (user, res) => {
     })
 };
 
-User.getUser = (userPseudo, res) => {
-    connection.query("SELECT * FROM user WHERE pseudo= ?", [userPseudo], (error, result) =>{
+User.getUserWithId = (userId, res) => {
+    connection.query("SELECT user.email, user.pseudo, user.avatar, user.privilege FROM user WHERE id= ?", [userId], (error, result) =>{
 
         if(error) {           
             res(error, null);
@@ -41,8 +41,8 @@ User.getUser = (userPseudo, res) => {
     })
 };
 
-User.getUserPrivilege = (userId, res) => {
-    connection.query("SELECT user.privilege FROM user WHERE id= ?", [userId], (error, result) =>{
+User.getUserWithPseudo = (userPseudo, res) => {
+    connection.query("SELECT user.id, user.email, user.pseudo, user.avatar, user.privilege FROM user WHERE pseudo= ?", [userPseudo], (error, result) =>{
 
         if(error) {           
             res(error, null);

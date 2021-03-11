@@ -21,13 +21,6 @@
                     <input type="password" id="password" name="password" placeholder="Mot de passe" v-model="user.password" required>
                 </div>
 
-                <div>
-                    <p>Photo de profil</p>
-                    <Upload 
-                        @image_uploaded="saveImage"
-                    />
-                </div>
-
                  <div class="avatar_content">
                     <img v-if="imageUrl" :src="imageUrl" :alt="imageName" class="avatar_img" />
                 </div>
@@ -45,14 +38,9 @@
 <script>
 const axios = require('axios');
 
-import Upload from '../components/Upload'
-
 export default {
     name: "Signup",
-        components: {
-            Upload
-        },
-
+    
     data() {
         return {
             user: {

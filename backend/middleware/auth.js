@@ -33,7 +33,7 @@ exports.admin = (req, res, next) => {
             res.status(401).send({ error:'Utilisateur non autorisé' });
         }
 
-        User.getUserPrivilege(userId, (error, result) => { 
+        User.getUserWithId(userId, (error, result) => { 
             if (error) {
             res.status(400).send(error);
             } 
