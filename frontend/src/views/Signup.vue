@@ -8,21 +8,18 @@
             <form @submit.prevent='signup()' class="signup-form">
                 <div>
                     <label for="pseudo"></label>
-                    <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" v-model="user.pseudo" required>
+                    <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" v-model="pseudo" required>
                 </div>
 
                 <div>
                     <label for="email"></label>
-                    <input type="email" id="email" name="email" placeholder="E-mail" v-model="user.email" required>
+                    <input type="email" id="email" name="email" placeholder="E-mail" v-model="email" required>
                 </div>
 
                 <div>
                     <label for="password" placeholder></label>
-                    <input type="password" id="password" name="password" placeholder="Mot de passe" v-model="user.password" required>
-                </div>
-
-                 <div class="avatar_content">
-                    <img v-if="imageUrl" :src="imageUrl" :alt="imageName" class="avatar_img" />
+                    <input type="password" id="password" name="password" placeholder="Mot de passe" v-model="password" required>
+                    <p v-if="error !== null" class="signup-form_error">{{ error }}</p>
                 </div>
 
                 <button type="submit">S'inscrire</button>
@@ -43,44 +40,33 @@ export default {
     
     data() {
         return {
-            user: {
-                email: "",
-                password: "",
-                pseudo: "",
-            },
-            image: null,
-            imageName: null,
-            imageUrl: null,
+            email: "",
+            password: "",
+            pseudo: "",
             privilege: "user",
+            error: null,
         }
     },
 
     methods:{
-        saveImage(payload) {
-            this.image = payload.image;
-            this.imageName = payload.image_name;
-            this.imageUrl = payload.image_url;
-        },
-
         signup(){
-            const formData = new FormData();
-            formData.append('user', JSON.stringify(this.user));
-            formData.append('image', this.image)
-            axios.post('http://localhost:3000/signup', formData)
-
-            .then((res) => {
+            axios.post('http://localhost:3000/signup', {
+                email: this.email,
+                password: this.password,
+                pseudo: this.pseudo,
+            })
+            .then(() => {
                 this.login();
-                console.log(res);
             })
             .catch((err) => { 
-                console.log(err) 
+                this.error = err.response.data.error; 
             });
         },
 
         login(){
             axios.post('http://localhost:3000/login', {
-                email: this.user.email,
-                password: this.user.password
+                email: this.email,
+                password: this.password
             })
             .then((res) => {
                 this.saveUserInformation(res);
@@ -125,6 +111,10 @@ export default {
     }
     & button {
         @include button_submit(100%);
+    }
+    &_error {
+        color: $color_txt_error;
+        margin-bottom: 20px;
     }
 }
 

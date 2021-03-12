@@ -11,9 +11,11 @@ Post.getAllPosts = (res) => {
 
         if(error) {
             res(error, null); //null utile lors de l'appelle de la fonction dans le controller exemple ligne:4 Post.getAllPosts((error, result) => { , result devient null avec cette ligne. 
-                            //erreur sur le tuto?
         }
-        res(null, result);
+        
+        else {
+            res(null, result);
+        }
     });
 };
 
@@ -23,7 +25,10 @@ Post.getOnePost = (postId, res) => {
         if(error) {
             res(error, null);
         }
-        res(null, result);
+
+        else {
+            res(null, result);
+        }
     });
 };
 
@@ -33,7 +38,10 @@ Post.createPost = (newPost, res) => {
         if(error) {
             res(error, null);
         }
-        res(null, result);
+
+        else {
+            res(null, result);
+        }
     });   
 };
 
@@ -43,7 +51,10 @@ Post.deleteOnePost = (postId, res) => {
         if(error) {
             res(error, null);
         }
-        res(null, result);
+
+        else {
+            res(null, result);
+        }
     });
 };
 

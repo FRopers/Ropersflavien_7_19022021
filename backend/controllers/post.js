@@ -8,8 +8,12 @@ exports.listAllPosts = (req, res) => {
     
     if (error) {
       res.status(400).send(error);
-    }       
-    res.status(200).json(result);
+    } 
+    
+    else {
+      res.status(200).json(result);
+    }
+    
   });
 };
 
@@ -21,8 +25,11 @@ exports.threadForOnePosts = (req, res) => {
     
     if (error) {
       res.status(400).send(error);
-    }       
-    res.status(200).json(result);
+    }  
+    
+    else {
+      res.status(200).json(result);
+    }   
   });
 };
 
@@ -44,8 +51,11 @@ exports.createNewPost = (req, res) => {
   Post.createPost(newPost, (error, result) => {
     if (error) {
       res.status(400).send(error);
-    }       
-    res.status(201).json(result);
+    }  
+    
+    else {
+      res.status(201).json(result);
+    }
   });
 };
 
@@ -53,13 +63,6 @@ exports.createNewPost = (req, res) => {
 // voir gestion d'erreur
 exports.deleteOnePostWithComments = (req, res) => {
   let postId = req.params.id;
-  Post.deleteOnePost(postId, (error, result) => { 
-  
-    if (error) {
-      res.status(400).send(error);
-    }       
-    res.status(200).json(result);
-  });
 
   if (req.body.imageUrl !== null) {
     const filename = req.body.imageUrl.split('/images/')[1];
@@ -67,6 +70,17 @@ exports.deleteOnePostWithComments = (req, res) => {
       if (err) throw err;
     });
   }
+
+  Post.deleteOnePost(postId, (error, result) => { 
+  
+    if (error) {
+      res.status(400).send(error);
+    } 
+    
+    else {
+      res.status(200).json(result);
+    }  
+  });
 };
 
 

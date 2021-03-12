@@ -4,7 +4,13 @@
 
         <div class="params">
             <div class="params-avatar">
-                <div><img :src= user.avatar alt="avatar utilisateur"></div>
+                <label for="image"><img :src= imageUrl alt="avatar utilisateur"></label>
+                <input type="file" id="image" accept="image/*" @change="uploadFile"/>
+
+                <div v-if="imageUrl !== user.avatar" class="params-avatar-button">
+                    <button @click="sendImageChoice()" class="params-avatar-button_submit">Valider</button>
+                    <button @click="cancelImageChoice()" class="params-avatar-button_cancel">Annuler</button>
+                </div>
             </div>
 
             <div class="params-user">
@@ -33,24 +39,26 @@
                     <button><font-awesome-icon icon="search" /></button>
                 </form>
                 
-                <div v-if="account.pseudo !== undefined" class="params-delete-account">
-                    <div class="params-delete-account_info">
-                        <div>
-                            <h4>Pseudo:</h4>
-                            <p>{{ account.pseudo }}</p>
-                        </div>
+                <div v-if="accounts.length > 0" class="params-delete-account">
+                    <div v-for="(item, index) in accounts" :key="item.id" class="params-delete-account_card">
+                        <div class="params-delete-account_info">
+                            <div>
+                                <h4>Pseudo:</h4>
+                                <p>{{ item.pseudo }}</p>
+                            </div>
 
-                        <div>
-                            <h4>Email:</h4>
-                            <p>{{ account.email }}</p>
-                        </div>
+                            <div>
+                                <h4>Email:</h4>
+                                <p>{{ item.email }}</p>
+                            </div>
 
-                        <div>
-                            <h4>Statut:</h4>
-                            <p>{{ account.privilege }}</p>
+                            <div>
+                                <h4>Statut:</h4>
+                                <p>{{ item.privilege }}</p>
+                            </div>
                         </div>
-                    </div>
-                    <button @click="deleteAccount(account.id)">Supprimer le compte</button>              
+                        <button @click="deleteAccount(item.id, index)">Supprimer le compte</button> <!-- length équivaut à accounts.length--> 
+                    </div>           
                 </div>
             </div>
         </div>
@@ -72,7 +80,9 @@ export default {
         return {
             user: "",
             pseudo: "",
-            account: "",
+            accounts: "",
+            imageUrl: "",
+            imageUpload: "",
         }
     },
 
@@ -87,6 +97,34 @@ export default {
             }
         },
 
+        uploadFile(event) {
+            const file = event.target.files[0];
+            this.imageUpload = file;
+            this.imageUrl = URL.createObjectURL(file);       
+        },
+
+        sendImageChoice() {
+            const storage = JSON.parse(localStorage.getItem('user'));
+            const formData = new FormData();
+            formData.append('oldImage', JSON.stringify(this.user.avatar));
+            formData.append('userId', JSON.stringify(storage.userId));
+            formData.append('image', this.imageUpload)
+            axios.put('http://localhost:3000/avatar', formData, {  
+                  
+                headers: {
+                    'Authorization': `Bearer ${storage.token}` 
+                }
+            })
+            .then(() => {
+                this.getUser();
+            })
+            .catch(err => console.log(err));
+        },
+
+        cancelImageChoice() {
+            this.imageUrl = this.user.avatar;
+        },
+
         getUser() {
             const storage = JSON.parse(localStorage.getItem('user'));
             axios.get('http://localhost:3000/user/' + storage.userId, 
@@ -97,6 +135,7 @@ export default {
             })
             .then(res => {
                 this.user = res.data[0];
+                this.imageUrl = res.data[0].avatar;
                 console.log(this.user);
                 })
             .catch(err => console.log(err));
@@ -113,13 +152,14 @@ export default {
                 }
             })
             .then(res => {
-                this.account = res.data[0];
-                console.log(this.account);
+                this.accounts = "";
+                this.accounts = res.data;
+                console.log(this.accounts);
                 })
             .catch(err => console.log(err));
         },
 
-        deleteAccount(id) {
+        deleteAccount(id, index) {
             const storage = JSON.parse(localStorage.getItem('user'));
             axios.delete('http://localhost:3000/user/'+ id,
             {
@@ -131,6 +171,7 @@ export default {
                 }
             })
             .then((res) => {
+                this.accounts.splice(index, 1)
                 console.log(res)
             })
             .catch(err => console.log(err));
@@ -180,11 +221,17 @@ export default {
     flex-direction: column;
     align-items: center;
     margin: 20px 0 50px 0;
-    & div{
+    & label {
         @include avatar_border(125px);
     }
+    & input {
+        display: none;
+    }  
     & img {
         @include avatar_image;
+        &:hover {
+            filter: brightness(90%);
+        }
     }
     & p{
         margin-top: 5px;
@@ -192,6 +239,17 @@ export default {
         font-size: 1.2em;
         display: flex;
         justify-content: center;
+    }
+}
+
+.params-avatar-button {
+    margin-top: 15px;
+    &_submit {
+        @include button_submit(70px);
+        margin-right: 30px; 
+    }
+    &_cancel {
+        @include button_cancel(70px);
     }
 }
 
@@ -204,7 +262,7 @@ export default {
 .params-search-account{
     display: flex;
     flex-direction: row;
-    margin-bottom: 20px;
+    margin: 0 0 20px 10px;
     & input {
         height: 35px;
         border-radius: 10px 0 0 10px;
@@ -229,7 +287,14 @@ export default {
 }
 
 .params-delete-account {
-    display: inline-block;
+    display: flex;
+    flex-wrap: wrap;
+    margin-right: 20px;
+    &_card {
+        width: 45%;
+        margin: 0 10px;
+        margin-bottom: 20px;
+    }
     &_info {
         border: black 1px solid;
         border-bottom: none;

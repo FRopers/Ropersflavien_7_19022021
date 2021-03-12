@@ -1,58 +1,90 @@
 const User = require('../models/user');
+const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
+const fs = require('fs');
 
 const privateKey = process.env.JWT_PRIVATEKEY;
 
 // Sauvegarde un utilisateur sur la bdd
-// hash à voir
-// gestion des erreur !!
-exports.createNewUser = (req, res) => {
-  const bodyParse = JSON.parse(req.body.user);
-  let imageUrl = `${req.protocol}://${req.get('host')}/images/default-user-image.png`;
-  if (req.file !== undefined) {
-    imageUrl = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`
+exports.createNewUser = (req, res) => { 
+  function checkEmail(email) {
+      var params = /^(([^<>()[\]\\.,;:\s@\"]+(\.[^<>()[\]\\.,;:\s@\"]+)*)|(\".+\"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/;
+      return params.test(email);
+  };
+
+  //verifie si l'email est au bon format
+  if (checkEmail(req.body.email) === false) {
+    res.status(400).json({ error: "Format de l'email non valide"});
   }
 
-  let newUser = new User({
-    email: bodyParse.email,
-    password: bodyParse.password,
-    pseudo: bodyParse.pseudo,
-    avatar: imageUrl,
-    privilege: "user"
-  });
-
-  User.createUser(newUser, (error, result) => {
+  else {
+    bcrypt.hash(req.body.password, 10)//hash le password
+    .then(hash => { 
+      let newUser = new User({
+        email: req.body.email,
+        password: hash,
+        pseudo: req.body.pseudo,
+        avatar: `${req.protocol}://${req.get('host')}/images/default-user-image.png`,
+        privilege: "user"
+      });
     
-    if (error) {
-      return res.status(400).send(error);
-    }
-    res.status(201).json(result);
-  });
-};
+      User.createUser(newUser, (error, result) => {
+        if (error) {
+          if (error.sqlMessage.indexOf("Duplicata") > -1) { //Vérifie si le message d'erreur concerne un duplicata  
+            if (error.sqlMessage.indexOf("user.pseudo") > -1) { //vérifie si un pseudo à déjà utilisé
+              res.status(400).json({ error: "Pseudo déjà utilisé"})
+            }
+
+            if (error.sqlMessage.indexOf("user.email") > -1) { // vérifie si un email à déjà été utilisé
+              res.status(400).json({ error: "Email déjà utilisé"})
+            }
+          }
+
+          else {
+            res.status(400).json({ error });
+          }        
+        } 
+    
+        else {
+          res.status(201).json({ message: "Utilisateur créé" });
+        }      
+      });
+    })
+
+    .catch(error => res.status(400).json({ error }));
+  };
+}
+
 
 // Vérifie si l'utilisateur loggé existe sur la bdd 
-// erreur traité : mauvais email ou mdp, erreur syntaxe de connexion bdd
-// manque: vérification si la requête contient bien un email ou un mdp
-// a vérifier pas de réponse si les if ne sont pas valide (nécessaire?)
 exports.loginUser = (req, res) => {
-  let user = new User(req.body);
-  User.login(user, (error, result) => {
-
+  let userEmail = req.body.email;
+  User.login(userEmail, (error, result) => {
     if (error) {
-      res.status(404).send(error);
+      res.status(404).json({ error });
+    } 
+
+    else if (result.length == 0) { // permet d'avertir que l'email utilisé n'existe pas
+      res.status(401).json({ error: "Email ou mot de passe incorrect"});
+    } 
+
+    else {
+      bcrypt.compare(req.body.password, result[0].password) // Vérifie si le password hashé dans la bdd est identique au password envoyé
+      .then(valid => {
+          if (!valid) {
+            res.status(401).json({ error: "Email ou mot de passe incorrect"});
+          }
+
+          else {
+            res.status(200).json({
+              userId: result[0].id, 
+              token: jwt.sign({ userId: result[0].id}, privateKey, { expiresIn: '24h'}), //user[0].id permet de selectionner id dans un format RowDataPacket
+              privilege: result[0].privilege
+            })
+          }
+      })
+      .catch(error => res.status(500).json({ error }));
     }
-   
-    if (result != null) {
-      if (result.length > 0) {
-        return res.status(200).json({
-          userId: result[0].id, //user[0].id permet de selectionner id dans un format RowDataPacket
-          token: jwt.sign({ userId: result[0].id}, privateKey, { expiresIn: '24h'}),
-          privilege: result[0].privilege
-        });
-      } 
-      res.status(400).send("Email ou mot de passe incorrect");
-    }
-    res.status(200).send("Connexion réussie");
   });
 };
 
@@ -63,9 +95,12 @@ exports.getUserSearchWithId = (req, res) => {
   User.getUserWithId(userId, (error, result) => { 
     
     if (error) {
-      res.status(400).send(error);
-    }       
-    res.status(200).json(result);
+      res.status(400).json({ error });
+    } 
+    
+    else {
+      res.status(200).json(result);
+    }   
   });
 };
 
@@ -77,8 +112,31 @@ exports.getUserSearchWithPseudo = (req, res) => {
     
     if (error) {
       res.status(400).send(error);
-    }       
-    res.status(200).json(result);
+    }
+
+    else {
+      res.status(200).json(result);
+    }        
+  });
+};
+
+exports.modifyAvatarImage = (req, res) => {
+  const userId = JSON.parse(req.body.userId);
+  const image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
+  User.modifyAvatar(userId, image, (error, result) => { 
+    
+    if (error) {
+      res.status(400).send(error);
+    }
+
+    else {
+        const oldImage = JSON.parse(req.body.oldImage);
+        const filename = oldImage.split('/images/')[1];
+        fs.unlink(`images/${filename}`, (err) => {
+          if (err) throw err;
+        });
+        res.status(200).json(result);
+    }        
   });
 };
 
@@ -90,7 +148,10 @@ exports.deleteOneUser = (req, res) => {
     
     if (error) {
       res.status(400).send(error);
-    }       
-    res.status(200).json(result);
+    }   
+    
+    else {
+      res.status(200).json(result);
+    }  
   });
 };

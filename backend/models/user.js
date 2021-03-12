@@ -14,19 +14,24 @@ User.createUser = (newUser, res) => {
         if(error) {
             res(error, null);
         }
-        res(null, result);
+        
+        else {
+            res(null, result);
+        }       
     })
 };
 
 
-User.login = (user, res) => {
-    connection.query("SELECT * FROM user WHERE email= ? AND password= ?", [user.email, user.password], (error, result) =>{
+User.login = (userEmail, res) => {
+    connection.query("SELECT * FROM user WHERE email= ?", [userEmail], (error, result) =>{
 
         if(error) {           
             res(error, null);
         }
 
-        res(null, result);
+        else {
+            res(null, result);
+        }
     })
 };
 
@@ -37,18 +42,34 @@ User.getUserWithId = (userId, res) => {
             res(error, null);
         }
 
-        res(null, result);
+        else {
+            res(null, result);
+        }
     })
 };
 
 User.getUserWithPseudo = (userPseudo, res) => {
-    connection.query("SELECT user.id, user.email, user.pseudo, user.avatar, user.privilege FROM user WHERE pseudo= ?", [userPseudo], (error, result) =>{
+    connection.query("SELECT user.id, user.email, user.pseudo, user.avatar, user.privilege FROM user WHERE user.pseudo LIKE ?", [userPseudo + "%"], (error, result) =>{
+        if(error) {           
+            res(error, null);
+        }
+
+        else {
+            res(null, result);
+        }
+    })
+};
+
+User.modifyAvatar = (userId, image, res) => {
+    connection.query("UPDATE user SET avatar = ? WHERE user.id = ?", [image, userId], (error, result) =>{
 
         if(error) {           
             res(error, null);
         }
 
-        res(null, result);
+        else {
+            res(null, result);
+        }
     })
 };
 
@@ -59,7 +80,9 @@ User.deleteUser = (userId, res) => {
             res(error, null);
         }
 
-        res(null, result);
+        else {
+            res(null, result);
+        }
     })
 };
 

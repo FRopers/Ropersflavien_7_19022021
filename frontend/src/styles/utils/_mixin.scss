@@ -68,3 +68,12 @@
     border: transparent;
     border-radius: 3px;  
 }
+
+@mixin button_cancel($width) {
+    background-color: $button_color_secondary;
+    color: $color_txt_primary;
+    width: $width;
+    height: 35px;
+    border: transparent;
+    border-radius: 3px;  
+}

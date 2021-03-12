@@ -24,7 +24,7 @@
                 </div>
             </form>
 
-            <div v-for="item in thread" :key="item.id" >
+            <div v-for="(item, index) in thread" :key="item.id" >
                 <div class="post-comment">
                     <div class="post-comment-avatar">
                         <div>
@@ -38,7 +38,7 @@
                     </div>
 
                     <div class="post-delete">
-                        <font-awesome-icon  icon="times-circle" v-if="admin" @click="deleteComment(item.id)" class="post-delete_icone" />
+                        <font-awesome-icon  icon="times-circle" v-if="admin" @click="deleteComment(item.id, index)" class="post-delete_icone" />
                     </div>
                 </div>
             </div>
@@ -112,7 +112,6 @@ export default {
             })
             .then(res => {
                 this.thread = res.data;
-                console.log("thread:", res.data);
             })
             .catch(err => console.log(err));
             },
@@ -130,9 +129,9 @@ export default {
                     'Authorization': `Bearer ${storage.token}` 
                 }
             })
-            .then((res) => {
-                this.$router.go(0)
-                console.log(res)
+            .then(() => {
+                this.comment = "",
+                this.getThread();
             })
             .catch(error => console.log(error));
         },
@@ -158,7 +157,7 @@ export default {
             .catch(err => console.log(err));
         },
 
-        deleteComment(commentId){
+        deleteComment(commentId, index){
             const storage = JSON.parse(localStorage.getItem('user'));
             axios.delete('http://localhost:3000/comment/' + commentId,
             {
@@ -170,7 +169,7 @@ export default {
                 }
             })
             .then((res) => {
-                this.$router.go(0); //lent à voir s'il y a mieu
+                this.thread.splice(index, 1);
                 console.log(res);
             })
             .catch(err => console.log(err));

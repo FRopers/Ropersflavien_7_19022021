@@ -8,8 +8,11 @@ exports.listAllCommentsByPost = (req, res) => {
       
       if (error) {
         res.status(400).send(error);
-      }       
-      res.status(200).json(result);
+      }
+      
+      else {
+        res.status(200).json(result);
+      }
     });
   };
 
@@ -21,8 +24,11 @@ exports.createNewComment = (req, res) => {
       
       if (error) {
         res.status(400).send(error);
-      }       
-      res.status(201).json(result);
+      }    
+      
+      else {
+        res.status(201).json(result);
+      }
     });
 };
 
@@ -34,8 +40,11 @@ exports.deleteOneCommentInPost = (req, res) => {
   
     if (error) {
       res.status(400).send(error);
-    }       
-    res.status(200).json(result);
+    } 
+    
+    else {
+      res.status(200).json(result);
+    }
   });
 };
   

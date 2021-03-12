@@ -12,7 +12,10 @@ Comment.getAllCommentByPost = (postId, res) => {
         if(error) {
             res(error, null);
         }
-        res(null, result);
+
+        else {
+            res(null, result);
+        }
     });
 };
 
@@ -22,7 +25,10 @@ Comment.createComment = (newComment, res) => {
         if(error) {
             res(error, null);
         }
-        res(null, result);
+
+        else {
+            res(null, result);
+        }
     });   
 };
 
@@ -32,7 +38,10 @@ Comment.deleteOneComment = (commentId, res) => {
         if(error) {
             res(error, null);
         }
-        res(null, result);
+        
+        else {
+            res(null, result);
+        }
     });
 };
 

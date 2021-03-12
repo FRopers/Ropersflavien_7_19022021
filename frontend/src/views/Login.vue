@@ -14,6 +14,7 @@
                 <div>
                     <label for="password" placeholder></label>
                     <input type="password" id="password" name="password" placeholder="Mot de passe" v-model="password" required>
+                    <p v-if="error !== null">{{ error }}</p>
                 </div>
                 <button type="submit">Se connecter</button>
             </form>
@@ -33,6 +34,7 @@ export default {
         return {
             email: "",
             password: "",
+            error: null,
         }
     },
 
@@ -48,7 +50,7 @@ export default {
                 console.log(res);
             })
             .catch((err) => { 
-                console.log(err) 
+                this.error = err.response.data.error;
             });
         },
 
@@ -80,6 +82,10 @@ export default {
 
 .login-form {
     width: 85%;
+    & p {
+        color: $color_txt_error;
+        margin-bottom: 20px;
+    }
     & input {
         @include display_auth_form;
     }
