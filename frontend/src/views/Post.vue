@@ -2,43 +2,51 @@
     <div>
         <Header />
         <div class="post">
-            <div class="post-delete">
-                <font-awesome-icon  icon="times-circle" v-if="admin" @click="deletePost()" class="post-delete_icone" />
-            </div>
-            <div >
-                <div class="post-avatar">
-                    <div><img :src= post.avatar alt="avatar utilisateur"></div>
-                    <h2>{{ post.pseudo }}</h2>
+            <div class="post-text">
+                <div class="post-delete">
+                    <font-awesome-icon  icon="times-circle" v-if="admin" @click="deletePost()" class="post-delete_icone" />
                 </div>
 
-                <p>{{ post.text }}</p>
+                <div >
+                    <div class="post-avatar">
+                        <div><img :src= post.avatar alt="avatar utilisateur"></div>
+                        <h2>{{ post.pseudo }}</h2>
+                    </div>
+
+                    <p>{{ post.text }}</p>
+                </div>
             </div>
 
-            <img v-if="post.url_image !== null" :src="post.url_image" />
+            <div class="post-image">
+                <img v-if="post.url_image !== null" :src="post.url_image" />
+            </div>
 
-            <form class="post-edit">
-                <div>
-                    <label for="comment"></label>
-                    <textarea id="comment" placeholder="Écriver un commentaire" v-model="comment" v-on:keyup.enter="postNewComment()" required></textarea>
-                    <p>Touchez Entrée pour publier votre commentaire.</p>
-                </div>
-            </form>
+            <div class="post-comment">
+                <form @submit.prevent='postNewComment()' class="post-comment-edit">
+                    <div>
+                        <label for="comment"></label>
+                        <textarea id="comment" placeholder="Écriver un commentaire" v-model="comment" v-on:keyup.enter="postNewComment()" required></textarea>
+                        <p>Touchez Entrée pour publier votre commentaire.</p>
+                        <button type="submit">Publier</button>
+                    </div>
+                </form>
 
-            <div v-for="(item, index) in thread" :key="item.id" >
-                <div class="post-comment">
-                    <div class="post-comment-avatar">
-                        <div>
-                            <img :src= item.avatar alt="avatar utilisateur" class="avatar_img">
+                <div v-for="(item, index) in thread" :key="item.id" >
+                    <div class="post-comment-view">
+                        <div class="post-comment-avatar">
+                            <div>
+                                <img :src= item.avatar alt="avatar utilisateur" class="avatar_img">
+                            </div>
                         </div>
-                    </div>
 
-                    <div class="post-comment-message">
-                        <h3>{{ item.pseudo }}</h3>
-                        <p>{{ item.comment }}</p>
-                    </div>
+                        <div class="post-comment-message">
+                            <h3>{{ item.pseudo }}</h3>
+                            <p>{{ item.comment }}</p>
+                        </div>
 
-                    <div class="post-delete">
-                        <font-awesome-icon  icon="times-circle" v-if="admin" @click="deleteComment(item.id, index)" class="post-delete_icone" />
+                        <div class="post-delete">
+                            <font-awesome-icon  icon="times-circle" v-if="admin" @click="deleteComment(item.id, index)" class="post-delete_icone" />
+                        </div>
                     </div>
                 </div>
             </div>
@@ -187,8 +195,18 @@ export default {
 @import "../styles/utils/mixin";
 
 .post {
-    @include display_message(35%);
-    padding: 20px;
+    @include display_message(40%);
+    @media (max-width: 1300px) {
+      width: 55%;
+    }
+    @media (max-width: 900px) {
+      width: 70%;
+    }
+    @media (max-width: 650px) {
+      width: 100%;
+      border-radius: 0px;
+    }
+
 }
 
 .post-delete {
@@ -213,22 +231,59 @@ export default {
     }
 }
 
-.post-edit {
-    margin: 20px 0;
-    width: 100%;
-    & p {
-        font-size: 0.7em;
+.post-text {
+    padding: 20px 20px 0 20px;
+    @media (max-width: 650px) {
+        padding: 10px 10px 0 10px;
     }
 }
 
-.post-comment {
+.post-image {
     display: flex;
-    margin-top: 10px; 
+    padding-top: 20px;
+}
+
+.post-comment {
+    padding: 20px;
+    @media (max-width: 650px) {
+        padding: 10px 0;
+    }
+}
+
+.post-comment-edit {
+    width: 100%;
+    & textarea {
+        @media (max-width: 650px) {
+            border-radius: 0;
+        }
+    }
+    & p {
+        font-size: 0.7em;
+        @media (max-width: 800px) {
+            display: none;
+        }
+    }
+    & button {
+        display: none;
+        @media (max-width: 800px) {
+            display: block;
+            margin: 10px auto 0 auto;     
+            @include button_submit(30%)          
+        }
+    }
+}
+
+.post-comment-view {
+    display: flex;
+    margin-top: 18px;
 }
 
 .post-comment-avatar {
     & div{
         @include avatar_border(30px);
+        @media (max-width: 650px) {
+            margin-left: 10px;
+        }
     }
     & img {
         @include avatar_image;

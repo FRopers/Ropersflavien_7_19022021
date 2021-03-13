@@ -74,6 +74,10 @@ export default {
 
 .login {
     @include display_auth;
+    @media (max-width: 650px) {
+      width: 100%;
+      margin-top: 75px;
+    }
 }
 
 .login-logo {

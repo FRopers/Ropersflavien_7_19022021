@@ -11,7 +11,7 @@ router.post('/signup', passwordValidator, userCtrl.createNewUser);
 router.post('/login', limiter.LoginLimiter, userCtrl.loginUser);
 router.get('/user/:id', auth.basic, userCtrl.getUserSearchWithId);
 router.get('/user', auth.admin, userCtrl.getUserSearchWithPseudo);
-router.put('/avatar', auth.basic, multer, userCtrl.modifyAvatarImage);
+router.put('/avatar', auth.basic, multer, auth.formdata, userCtrl.modifyAvatarImage);
 router.delete('/user/:id', auth.admin, userCtrl.deleteOneUser);
 
 module.exports = router;

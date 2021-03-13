@@ -98,6 +98,10 @@ export default {
 
 .signup {
     @include display_auth;
+    @media (max-width: 650px) {
+      width: 100%;
+      margin-top: 75px;
+    }
 }
 
 .signup-logo {
@@ -126,6 +130,9 @@ export default {
     &_login {
         text-decoration: none;
         color: $color_txt_tertiary;
+    }
+    @media (max-width: 400px) {
+        font-size: 0.8em;
     }
 }
 </style>

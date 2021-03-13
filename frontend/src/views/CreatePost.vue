@@ -8,18 +8,20 @@
             <form @submit.prevent='postNewPost()' class="createpost-form">
                 <div>
                     <label for="text"></label>
-                    <textarea id="text" v-model="post.text" placeholder="Que voulez vous dire?" required></textarea>
+                    <textarea id="text" v-model="post" placeholder="Que voulez vous dire?" required></textarea>
                 </div>
 
                 <div>
-                    <img v-if="imageUrl" :src="imageUrl" :alt="imageName"/>
+                    <img v-if="imageUrl" :src="imageUrl" alt="image du post"/>
                 </div>
                
-                <div class="createpost-form_image">
+                <div class="createpost-form-image">
                     <p>Ajouter à votre publication</p>
-                    <Upload 
-                        @image_uploaded="saveImage"
-                    />
+
+                    <div class="createpost-form-image_upload">
+                        <label for="image"><font-awesome-icon icon="file-image" /></label>
+                        <input type="file" id="image" accept="image/*" @change="uploadFile" />
+                    </div>
                 </div>
 
                 <button class="createpost-button" type="submit">Publier</button>
@@ -32,23 +34,17 @@
 const axios = require('axios');
 
 import Header from '../components/Header'
-import Upload from '../components/Upload'
 
 export default {
     name: "CreatePost",
         components: {
             Header,
-            Upload
     },
 
     data() {
         return {
-            post: {
-                userId: "",
-                text: "",
-            },
-            image: null,
-            imageName: null,
+            post: "",
+            imageUpload: null,
             imageUrl: null,      
         }
     },
@@ -61,18 +57,21 @@ export default {
             }
         },
 
-        saveImage(payload) {
-            this.image = payload.image;
-            this.imageName = payload.image_name;
-            this.imageUrl = payload.image_url;
+        uploadFile(event) {
+            const file = event.target.files[0];
+            this.imageUpload = file;
+            this.imageUrl = URL.createObjectURL(file);       
         },
 
         postNewPost(){
             const storage = JSON.parse(localStorage.getItem('user')); 
-            this.post.userId = storage.userId;
             const formData = new FormData();
-            formData.append('post', JSON.stringify(this.post));
-            formData.append('image', this.image)
+            const data = {
+                post: this.post,
+                userId: storage.userId
+            }
+            formData.append('data', JSON.stringify(data));
+            formData.append('image', this.imageUpload)
             axios.post('http://localhost:3000/', formData, {
     
                     headers: {
@@ -100,6 +99,20 @@ export default {
 .createpost {
     @include display_message(35%);
     padding: 20px;
+
+    @media (max-width: 1450px) {
+        width: 40%;
+    }
+    @media (max-width: 1200px) {
+        width: 50%;
+    }
+    @media (max-width: 950px) {
+        width: 65%;
+    }
+    @media (max-width: 700px) {
+        padding: 10px;
+        width: 95%;
+    }
 }
 
 .createpost-title{
@@ -116,14 +129,35 @@ export default {
         border-radius: 0px;
         border: none;
     }
-    &_image {
-        margin-bottom: 20px;
-        border: 1px solid $border_color;
-        padding: 10px;
-        display: flex;
-        justify-content: space-between;
+}
+
+.createpost-form-image {
+    margin-bottom: 20px;
+    border: 1px solid $border_color;
+    padding: 10px;
+    display: flex;
+    justify-content: space-between;
+    &_upload {
+        justify-content: flex-end;
+        & input {
+            display: none;
+        }
+        & label {
+            color: $color_txt_tertiary;
+            font-size: 1.3em ;
+        }
     }
 }
+    .upload {
+        justify-content: flex-end;
+        & input {
+            display: none;
+        }
+        & label {
+            color: $color_txt_tertiary;
+            font-size: 1.3em ;
+        }
+    }
 
 .createpost-button {
     margin: auto;     

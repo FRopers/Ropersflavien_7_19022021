@@ -40,6 +40,9 @@ export default {
 
 .header-logo {
     width: 250px;
+    @media (max-width: 650px) {
+      width: 125px;
+    }
 }
 
 .header-icone {
@@ -48,6 +51,10 @@ export default {
     margin-left: 12px;
     color: $color_txt_primary;
     text-decoration: none;
+    @media (max-width: 650px) {
+        font-size: 1em;
+        margin-left: 20px;
+    }
     :hover {
         color: $color_txt_primary;
     }

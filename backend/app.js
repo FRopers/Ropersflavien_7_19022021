@@ -1,5 +1,6 @@
 const express = require('express');
 const bodyParser = require("body-parser");
+const helmet = require('helmet');
 const path = require('path');
 
 const app = express();
@@ -12,6 +13,7 @@ app.use((req, res, next) => {
 });
 
 app.use(bodyParser.json());
+app.use(helmet());
 
 const postsRoutes = require('./routes/post');
 const usersRoutes = require('./routes/user');

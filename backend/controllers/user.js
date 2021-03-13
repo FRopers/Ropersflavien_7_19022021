@@ -41,7 +41,7 @@ exports.createNewUser = (req, res) => {
           }
 
           else {
-            res.status(400).json({ error });
+            res.status(500).json({ error });
           }        
         } 
     
@@ -61,7 +61,7 @@ exports.loginUser = (req, res) => {
   let userEmail = req.body.email;
   User.login(userEmail, (error, result) => {
     if (error) {
-      res.status(404).json({ error });
+      res.status(500).json({ error });
     } 
 
     else if (result.length == 0) { // permet d'avertir que l'email utilisé n'existe pas
@@ -89,15 +89,18 @@ exports.loginUser = (req, res) => {
 };
 
 // Recherche et envoie un utilisateur
-// voir gestion d'erreur
 exports.getUserSearchWithId = (req, res) => {
   let userId = req.params.id;
   User.getUserWithId(userId, (error, result) => { 
     
     if (error) {
-      res.status(400).json({ error });
-    } 
+      res.status(500).json({ error });
+    }
     
+    else if (result.length == 0) { // permet d'avertir que l'id utilisé n'existe pas
+    res.status(401).json({ error: "Identifiant incorrect"});
+  } 
+   
     else {
       res.status(200).json(result);
     }   
@@ -105,13 +108,16 @@ exports.getUserSearchWithId = (req, res) => {
 };
 
 // Recherche et envoie un utilisateur
-// voir gestion d'erreur
 exports.getUserSearchWithPseudo = (req, res) => {
   let userPseudo = req.query.pseudo;
   User.getUserWithPseudo(userPseudo, (error, result) => { 
     
     if (error) {
-      res.status(400).send(error);
+      res.status(500).json({ error });
+    }
+
+    else if (result.length == 0) { // permet d'avertir que le pseudo utilisé n'existe pas
+    res.status(401).json({ error: "Aucun pseudo trouvé"});
     }
 
     else {
@@ -120,38 +126,37 @@ exports.getUserSearchWithPseudo = (req, res) => {
   });
 };
 
+// Remplace l'image de l'avatar dans la bdd et supprime l'ancienne dans le dossier images
 exports.modifyAvatarImage = (req, res) => {
-  const userId = JSON.parse(req.body.userId);
+  const bodyparse = JSON.parse(req.body.data);
   const image = `${req.protocol}://${req.get('host')}/images/${req.file.filename}`;
-  User.modifyAvatar(userId, image, (error, result) => { 
+  User.modifyAvatar(bodyparse.userId, image, (error, result) => { 
     
     if (error) {
-      res.status(400).send(error);
+      res.status(500).json({ error });
     }
 
     else {
-        const oldImage = JSON.parse(req.body.oldImage);
-        const filename = oldImage.split('/images/')[1];
+        const filename = bodyparse.oldImage.split('/images/')[1];
         fs.unlink(`images/${filename}`, (err) => {
           if (err) throw err;
         });
-        res.status(200).json(result);
+        res.status(200).json({ message: "Image sauvegardé" });
     }        
   });
 };
 
 // Recherche et supprime un utilisateur
-// voir gestion d'erreur
 exports.deleteOneUser = (req, res) => {
   let userId = req.params.id;
   User.deleteUser(userId, (error, result) => { 
     
     if (error) {
-      res.status(400).send(error);
+      res.status(500).json({ error });
     }   
     
     else {
-      res.status(200).json(result);
+      res.status(200).json({ message: "Utilisateur supprimé"});
     }  
   });
 };

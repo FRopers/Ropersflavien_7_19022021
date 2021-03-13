@@ -72,6 +72,7 @@ export default {
 <style lang="scss">
 @import "../styles/utils/variables";
 @import "../styles/utils/mixin";
+
 .flex {
     display:flex;
 }
@@ -85,10 +86,24 @@ export default {
             color: $color_txt_secondary;
         }
     }
+    @media (max-width: 1300px) {
+      width: 55%;
+    }
+    @media (max-width: 900px) {
+      width: 70%;
+    }
+    @media (max-width: 650px) {
+      width: 100%;
+      margin: 15px 0;
+      border-radius: 0px;
+    }
 }
 
 .home-post {
     padding: 16px;
+    @media (max-width: 650px) {
+        padding: 10px;
+    }
 }
 
 .home-avatar {
@@ -108,6 +123,9 @@ export default {
     display: flex;
     & img {
         border-radius: 0 0 5px 5px;
+        @media (max-width: 650px) {
+             border-radius: 0px;
+        }
     }
 }
 

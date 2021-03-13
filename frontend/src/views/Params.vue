@@ -106,12 +106,16 @@ export default {
         sendImageChoice() {
             const storage = JSON.parse(localStorage.getItem('user'));
             const formData = new FormData();
-            formData.append('oldImage', JSON.stringify(this.user.avatar));
-            formData.append('userId', JSON.stringify(storage.userId));
+            const data = {
+                oldImage: this.user.avatar,
+                userId: storage.userId
+            }
+            formData.append('data', JSON.stringify(data));
             formData.append('image', this.imageUpload)
             axios.put('http://localhost:3000/avatar', formData, {  
                   
                 headers: {
+                    'Content-Type': 'multipart/form-data',
                     'Authorization': `Bearer ${storage.token}` 
                 }
             })
@@ -188,14 +192,35 @@ export default {
 @import "../styles/utils/mixin";
 
 .params {
+    display: flex;
+    flex-direction: column;
     margin: auto;
     background-color: $background_color_primary;
     width: 50%;
     padding: 20px;
     & h2 {
         border-bottom: 1px solid $border_color;
-        height: 40px;
+        padding-bottom: 20px;
         margin: 40px 0;
+        @media (max-width: 900px) {
+            margin: 40px 10px,
+        }
+    }
+    @media (max-width: 1400px) {
+      width: 60%;
+    }
+    @media (max-width: 1200px) {
+      width: 70%;
+    }
+    @media (max-width: 1100px) {
+      width: 80%;
+    }
+    @media (max-width: 900px) {
+      width: 90%;
+      padding: 0;
+    }
+    @media (max-width: 750px) {
+      width: 100%;
     }
 }
 
@@ -207,11 +232,25 @@ export default {
         & h3 {
             font-size: 1.05em;
             width: 20%;
+            @media (max-width: 900px) {
+                margin-left: 20px;
+            }
+            @media (max-width: 750px) {
+                margin-left: 0;
+                width: 100%;
+            }
         }
-        & p{
+        & p {
             margin-left: 10px;
             display: flex;
             align-items: center;
+            @media (max-width: 750px) {
+                margin: 10px 0 0 0;
+            }
+        }
+        @media (max-width: 750px) {
+            flex-direction: column;
+            margin-left: 15px;
         }
     }
 }
@@ -256,6 +295,9 @@ export default {
 .params-admin {
     & h3 {
         margin-bottom: 20px;
+        @media (max-width: 900px) {
+            margin: 0 15px 20px 15px,
+        }
     }
 }
 
@@ -263,8 +305,10 @@ export default {
     display: flex;
     flex-direction: row;
     margin: 0 0 20px 10px;
+    width: 220px;
     & input {
         height: 35px;
+        width: 85%;
         border-radius: 10px 0 0 10px;
         padding-left: 8px;
         border: 1px solid black;
@@ -276,13 +320,16 @@ export default {
     & button {
         background-color: $button_color_primary;
         color: $color_txt_primary;
-        width: 10%;
+        width: 15%;
         border: transparent;
         border-radius: 0 10px 10px 0;
         margin-left: -2px;
         &:focus {
             outline: none;
-        }  
+        } 
+    }
+    @media (max-width: 900px) {
+        margin: 0 auto 20px auto;
     }
 }
 
@@ -290,10 +337,14 @@ export default {
     display: flex;
     flex-wrap: wrap;
     margin-right: 20px;
+
     &_card {
         width: 45%;
         margin: 0 10px;
         margin-bottom: 20px;
+        @media (max-width: 800px) {
+            width: 100%;
+        }
     }
     &_info {
         border: black 1px solid;
@@ -316,6 +367,11 @@ export default {
         height: 25px;
         border: transparent;
         border-radius: 0 0 10px 10px;
+    }
+    @media (max-width: 800px){
+        display: flex;
+        flex-direction: column;
+        align-items: center;
     }
 }
 </style>

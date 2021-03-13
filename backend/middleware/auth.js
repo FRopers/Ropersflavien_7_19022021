@@ -11,9 +11,8 @@ exports.basic = (req, res, next) => {
         const token = req.headers.authorization.split(' ')[1];
         const decodedtoken = jwt.verify(token, privateKey);
         const userId = decodedtoken.userId;
-
         if (req.body.userId && req.body.userId !== userId) {
-            res.status(401).send({ error:'Utilisateur non autorisé' });
+            res.status(401).json({ error:'Utilisateur non autorisé' });
         } else {
             next();
         }
@@ -23,6 +22,25 @@ exports.basic = (req, res, next) => {
     }
 };
 
+// Vérifie si le token utilisé correspond à un utilisateur avec des données formdata
+exports.formdata = (req, res, next) => {
+    try {
+        const token = req.headers.authorization.split(' ')[1];
+        const decodedtoken = jwt.verify(token, privateKey);
+        const userId = decodedtoken.userId;
+        const bodyparse = JSON.parse(req.body.data)
+        if (bodyparse.userId !== userId) {
+            res.status(401).json({ error:'Utilisateur non autorisé' });
+        } else {
+            next();
+        }
+
+    } catch(error) {
+        res.status(400).json({ error: error | 'Requête non authentifiée !'});
+    }
+};
+
+// Vérifie si le token utilisé correspond à un compte admin
 exports.admin = (req, res, next) => {
     try {
         const token = req.headers.authorization.split(' ')[1];
@@ -30,16 +48,16 @@ exports.admin = (req, res, next) => {
         const userId = decodedtoken.userId;
 
         if (req.body.userId && req.body.userId !== userId) {
-            res.status(401).send({ error:'Utilisateur non autorisé' });
+            res.status(401).json({ error:'Utilisateur non autorisé' });
         }
 
         User.getUserWithId(userId, (error, result) => { 
             if (error) {
-            res.status(400).send(error);
+            res.status(400).json({ error });
             } 
 
             if (result[0].privilege !== "ADMIN") {
-                res.status(401).send({ error:'Droit administrateur requis' });
+                res.status(401).json({ error: 'Droit administrateur requis' });
             } else {
                 next();
             }        

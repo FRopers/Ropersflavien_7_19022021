@@ -7,7 +7,7 @@ const postsCtrl = require('../controllers/post');
 
 router.get('/', auth.basic, postsCtrl.listAllPosts);
 router.get('/:id', auth.basic, postsCtrl.threadForOnePosts);
-router.post('/', auth.basic, multer, postsCtrl.createNewPost);
+router.post('/', auth.basic, multer, auth.formdata, postsCtrl.createNewPost);
 router.delete('/:id', auth.admin, postsCtrl.deleteOnePostWithComments);
 
 module.exports = router;
