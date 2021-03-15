@@ -137,11 +137,17 @@ exports.modifyAvatarImage = (req, res) => {
     }
 
     else {
-        const filename = bodyparse.oldImage.split('/images/')[1];
+      const filename = bodyparse.oldImage.split('/images/')[1];
+      if (filename !== "default-user-image.png") { //empêche de supprimer l'image par défault
         fs.unlink(`images/${filename}`, (err) => {
           if (err) throw err;
         });
         res.status(200).json({ message: "Image sauvegardé" });
+      }
+
+      else {
+        res.status(200).json({ message: "Image sauvegardé" });
+      }
     }        
   });
 };

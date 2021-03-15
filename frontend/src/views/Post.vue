@@ -1,10 +1,10 @@
 <template>
     <div>
         <Header />
-        <div class="post">
+        <section class="post">
             <div class="post-text">
                 <div class="post-delete">
-                    <font-awesome-icon  icon="times-circle" v-if="admin" @click="deletePost()" class="post-delete_icone" />
+                    <font-awesome-icon  icon="times-circle" v-if="admin" @click="deletePost()" class="post-delete_icone" title="supprimer" />
                 </div>
 
                 <div >
@@ -17,15 +17,15 @@
                 </div>
             </div>
 
-            <div class="post-image">
-                <img v-if="post.url_image !== null" :src="post.url_image" />
+            <div v-if="post.url_image !== null" class="post-image">
+                <img :src="post.url_image" alt="image du post" />
             </div>
 
             <div class="post-comment">
                 <form @submit.prevent='postNewComment()' class="post-comment-edit">
                     <div>
-                        <label for="comment"></label>
-                        <textarea id="comment" placeholder="Écriver un commentaire" v-model="comment" v-on:keyup.enter="postNewComment()" required></textarea>
+                        <label for="comment" class="hidden">Écriver un commentaire</label>
+                        <textarea id="comment" placeholder="Écriver un commentaire" v-model="comment" v-on:keyup.enter="postNewComment()" aria-required=true required></textarea>
                         <p>Touchez Entrée pour publier votre commentaire.</p>
                         <button type="submit">Publier</button>
                     </div>
@@ -45,12 +45,12 @@
                         </div>
 
                         <div class="post-delete">
-                            <font-awesome-icon  icon="times-circle" v-if="admin" @click="deleteComment(item.id, index)" class="post-delete_icone" />
+                            <font-awesome-icon  icon="times-circle" v-if="admin" @click="deleteComment(item.id, index)" class="post-delete_icone" title="supprimer"/>
                         </div>
                     </div>
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -240,7 +240,7 @@ export default {
 
 .post-image {
     display: flex;
-    padding-top: 20px;
+    margin-top: 20px;
 }
 
 .post-comment {

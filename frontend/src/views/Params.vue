@@ -2,13 +2,14 @@
     <div>
         <Header />
 
-        <div class="params">
+        <section class="params">
             <div class="params-avatar">
                 <label for="image"><img :src= imageUrl alt="avatar utilisateur"></label>
                 <input type="file" id="image" accept="image/*" @change="uploadFile"/>
 
                 <div v-if="imageUrl !== user.avatar" class="params-avatar-button">
                     <button @click="sendImageChoice()" class="params-avatar-button_submit">Valider</button>
+
                     <button @click="cancelImageChoice()" class="params-avatar-button_cancel">Annuler</button>
                 </div>
             </div>
@@ -18,11 +19,13 @@
 
                 <div class="params-user_info">
                     <h3>Pseudo :</h3>
+
                     <p>{{ user.pseudo }}</p>
                 </div>
 
                 <div class="params-user_info">
                     <h3>Adresse email :</h3>
+
                     <p>{{ user.email }}</p>
                 </div>
                 
@@ -30,13 +33,20 @@
 
             <div v-if="user.privilege === 'ADMIN'" class="params-admin">
                 <h2>Gestion des comptes</h2>
+
                 <h3>Suppression de compte</h3>
 
-                <form @submit.prevent='getUserSearch()' class="params-search-account">
-                    <label for="pseudo-search"></label>
-                    <input type="search" id="pseudo-search" name="search" placeholder=" Pseudo du compte" v-model="pseudo" />
+                <form @submit.prevent='getUserSearch()' class="params-search">
+                    <div class="params-search-account">
+                        <label for="pseudo-search" class="hidden">Pseudo du compte</label>
+                        <input type="search" id="pseudo-search" name="search" placeholder=" Pseudo du compte" v-model="pseudo" />
 
-                    <button><font-awesome-icon icon="search" /></button>
+                        <button><font-awesome-icon icon="search" title="recherche" /></button>
+                    </div>
+
+                    <div class="params-search-error">
+                        <p v-if="error !== null">{{ error }}</p>
+                    </div>
                 </form>
                 
                 <div v-if="accounts.length > 0" class="params-delete-account">
@@ -44,16 +54,19 @@
                         <div class="params-delete-account_info">
                             <div>
                                 <h4>Pseudo:</h4>
+
                                 <p>{{ item.pseudo }}</p>
                             </div>
 
                             <div>
                                 <h4>Email:</h4>
+
                                 <p>{{ item.email }}</p>
                             </div>
 
                             <div>
                                 <h4>Statut:</h4>
+                                
                                 <p>{{ item.privilege }}</p>
                             </div>
                         </div>
@@ -61,7 +74,7 @@
                     </div>           
                 </div>
             </div>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -83,6 +96,7 @@ export default {
             accounts: "",
             imageUrl: "",
             imageUpload: "",
+            error: null,
         }
     },
 
@@ -156,11 +170,14 @@ export default {
                 }
             })
             .then(res => {
-                this.accounts = "";
+                this.error = null;
                 this.accounts = res.data;
                 console.log(this.accounts);
                 })
-            .catch(err => console.log(err));
+            .catch(err => {
+                this.accounts = "";
+                this.error = err.response.data.error;
+            });
         },
 
         deleteAccount(id, index) {
@@ -199,7 +216,7 @@ export default {
     width: 50%;
     padding: 20px;
     & h2 {
-        border-bottom: 1px solid $border_color;
+        border-bottom: 1px solid $border_color_primary;
         padding-bottom: 20px;
         margin: 40px 0;
         @media (max-width: 900px) {
@@ -301,17 +318,24 @@ export default {
     }
 }
 
+.params-search {
+    display: flex;
+    margin: 0 0 20px 10px;
+    width: 220px;
+    @media (max-width: 900px) {
+        margin: 0 auto 20px auto;
+    }
+}
+
 .params-search-account{
     display: flex;
     flex-direction: row;
-    margin: 0 0 20px 10px;
-    width: 220px;
     & input {
         height: 35px;
         width: 85%;
         border-radius: 10px 0 0 10px;
         padding-left: 8px;
-        border: 1px solid black;
+        border: 1px solid $border_color_secondary;
         background-color: $background_color_secondary;
         &:focus {
             outline: none;
@@ -328,9 +352,13 @@ export default {
             outline: none;
         } 
     }
-    @media (max-width: 900px) {
-        margin: 0 auto 20px auto;
-    }
+}
+
+.params-search-error {
+    display: flex;
+    justify-content: center;
+    color: $color_txt_error;
+    margin-top: 10px;
 }
 
 .params-delete-account {
@@ -347,7 +375,7 @@ export default {
         }
     }
     &_info {
-        border: black 1px solid;
+        border: $border_color_secondary 1px solid;
         border-bottom: none;
         border-radius: 5px 5px 0 0;
         padding: 5px;

@@ -1,14 +1,14 @@
 <template>
     <div>
         <Header />
-        <div class="createpost">
+        <section class="createpost">
             <div class="createpost-title">
                 <h2>Créer un publication</h2>
             </div>
             <form @submit.prevent='postNewPost()' class="createpost-form">
                 <div>
-                    <label for="text"></label>
-                    <textarea id="text" v-model="post" placeholder="Que voulez vous dire?" required></textarea>
+                    <label for="text" class="hidden">Que voulez vous dire?</label>
+                    <textarea id="text" v-model="post" placeholder="Que voulez vous dire?" aria-required=true required></textarea>
                 </div>
 
                 <div>
@@ -19,14 +19,14 @@
                     <p>Ajouter à votre publication</p>
 
                     <div class="createpost-form-image_upload">
-                        <label for="image"><font-awesome-icon icon="file-image" /></label>
+                        <label for="image"><font-awesome-icon icon="file-image" title="télécharger une image"/></label>
                         <input type="file" id="image" accept="image/*" @change="uploadFile" />
                     </div>
                 </div>
 
                 <button class="createpost-button" type="submit">Publier</button>
             </form>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -118,7 +118,7 @@ export default {
 .createpost-title{
     display: flex;
     justify-content: center;
-    border-bottom: 1px solid $border_color;
+    border-bottom: 1px solid $border_color_primary;
 }
 
 .createpost-form {
@@ -133,7 +133,7 @@ export default {
 
 .createpost-form-image {
     margin-bottom: 20px;
-    border: 1px solid $border_color;
+    border: 1px solid $border_color_primary;
     padding: 10px;
     display: flex;
     justify-content: space-between;

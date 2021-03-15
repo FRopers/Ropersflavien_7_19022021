@@ -1,24 +1,25 @@
 <template>
     <div>        
-        <div class="signup">
+        <section class="signup">
             <h1 class="signup-logo">
                 <img src="../assets/logo_groupomania_black.svg" alt="logo Groupomania"> 
             </h1>
 
             <form @submit.prevent='signup()' class="signup-form">
                 <div>
-                    <label for="pseudo"></label>
-                    <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" v-model="pseudo" required>
+                    <label for="pseudo" class="hidden">Pseudo</label>
+                    <input type="text" id="pseudo" name="pseudo" placeholder="Pseudo" v-model="pseudo" aria-required=true required>
                 </div>
 
                 <div>
-                    <label for="email"></label>
-                    <input type="email" id="email" name="email" placeholder="E-mail" v-model="email" required>
+                    <label for="email" class="hidden">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="E-mail" v-model="email" aria-required=true required>
                 </div>
 
                 <div>
-                    <label for="password" placeholder></label>
-                    <input type="password" id="password" name="password" placeholder="Mot de passe" v-model="password" required>
+                    <label for="password" class="hidden">Mot de passe</label>
+                    <input type="password" id="password" name="password" placeholder="Mot de passe:" v-model="password" aria-required=true required>
+
                     <p v-if="error !== null" class="signup-form_error">{{ error }}</p>
                 </div>
 
@@ -28,7 +29,7 @@
                     <p>Vous avez déjà un compte?<router-link to="login" class="signup-redirect_login"> Connexion</router-link></p>
                 </div>
             </form>
-        </div>
+        </section>
     </div>
 </template>
 
@@ -45,22 +46,36 @@ export default {
             pseudo: "",
             privilege: "user",
             error: null,
+            validate: "",
         }
     },
 
     methods:{
+        validatePassword(){
+            this.error = null;
+            this.validate = true;
+            if (! this.password.match(/^(?=.*\d)(?=.*[a-z])(?=.*[A-Z]).{8,}$/)) {
+                console.log("false");
+                this.error = "Le mot de passe doit faire 8 caractères minimum avec au moin une majuscule, une minuscule et un nombre";
+                this.validate = false;
+            }   
+        },
+
         signup(){
-            axios.post('http://localhost:3000/signup', {
+            this.validatePassword();
+            if (this.validate) {
+                axios.post('http://localhost:3000/signup', {
                 email: this.email,
                 password: this.password,
                 pseudo: this.pseudo,
-            })
-            .then(() => {
-                this.login();
-            })
-            .catch((err) => { 
-                this.error = err.response.data.error; 
-            });
+                })
+                .then(() => {
+                    this.login();
+                })
+                .catch((err) => { 
+                    this.error = err.response.data.error; 
+                });                
+            }
         },
 
         login(){
@@ -117,6 +132,7 @@ export default {
         @include button_submit(100%);
     }
     &_error {
+        text-align: center;
         color: $color_txt_error;
         margin-bottom: 20px;
     }

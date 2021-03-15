@@ -2,19 +2,20 @@
     <header>
         <nav>
             <h1>
-                <router-link to="/"><img src="../assets/logo_groupomania_white.svg" alt="logo Groupomania" class="header-logo"></router-link>
+                <router-link to="/" aria-label="retour à la page principale"><img src="../assets/logo_groupomania_white.svg" alt="logo Groupomania" class="header-logo"></router-link>
             </h1>
 
             <ul>
                 <li>
-                    <router-link to="createpost"><font-awesome-icon icon="edit" class="header-icone" /></router-link>
+                    <router-link to="createpost" aria-label="création de post"><font-awesome-icon icon="edit" class="header-icone" /></router-link>
                 </li>
                 
                 <li>
-                    <router-link to="params"><font-awesome-icon icon="users-cog" class="header-icone" /></router-link>
+                    <router-link to="params" aria-label="paramètres"><font-awesome-icon icon="users-cog" class="header-icone" /></router-link>
                 </li>
+
                 <li v-on:click="launchLogout()">
-                    <p><font-awesome-icon icon="power-off" class="header-icone"/></p>
+                    <router-link to="login" aria-label="Déconnexion"><font-awesome-icon icon="power-off" class="header-icone" /></router-link>
                 </li>
             </ul>
         </nav>
@@ -28,8 +29,7 @@ export default {
 
     methods: {
         launchLogout() {
-            localStorage.removeItem('user');
-            this.$router.replace('/login'); 
+            localStorage.removeItem('user'); 
         },
     },
 }

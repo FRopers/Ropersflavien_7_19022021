@@ -18,8 +18,19 @@ export default {
 @import "./styles/base/base";
 
 .app-body {
-    font-family: Helvetica, Arial, sans-serif;
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
+  font-family: Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
 }
+
+//class masquant les labels non désiré (accessibilité)
+.hidden {
+  height: 1px;
+  width: 1px;
+  left: 0;
+  overflow: hidden;
+  position: absolute;
+  top: -10000px;
+}
+
 </style>

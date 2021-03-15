@@ -1,26 +1,26 @@
 <template>
     <div>
-        <div class="login">
+        <section class="login">
             <h1 class="login-logo">
                 <img src="../assets/logo_groupomania_black.svg" alt="logo Groupomania"> 
             </h1>
 
             <form @submit.prevent='login()' class="login-form">
                 <div>
-                    <label for="email"></label>
-                    <input type="email" id="email" name="email" placeholder="E-mail" v-model="email" required>
+                    <label for="email" class="hidden">E-mail</label>
+                    <input type="email" id="email" name="email" placeholder="E-mail" v-model="email" aria-required=true required>
                 </div>
                 
                 <div>
-                    <label for="password" placeholder></label>
-                    <input type="password" id="password" name="password" placeholder="Mot de passe" v-model="password" required>
+                    <label for="password" class="hidden">Mot de passe</label>
+                    <input type="password" id="password" name="password" placeholder="Mot de passe" v-model="password" aria-required=true required>
                     <p v-if="error !== null">{{ error }}</p>
                 </div>
                 <button type="submit">Se connecter</button>
             </form>
 
-            <router-link to="signup" class="login_redirect">Créer un compte Groupomania</router-link>
-        </div>
+            <router-link to="signup" class="login_redirect" >Créer un compte Groupomania</router-link>
+        </section>
     </div>
 </template>
 

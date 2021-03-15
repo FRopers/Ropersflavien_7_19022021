@@ -5,7 +5,7 @@
             <router-link :to="{ path:'post', query: { id: post.id }}" class="home_link">
                 <div class="home-post">
                     <div class="home-avatar">
-                        <div><img :src= post.avatar alt="avatar utilisateur"></div>
+                        <div><img :src= post.avatar :alt="`avatar de ${post.pseudo}`"></div>
                         <h2>{{ post.pseudo }}</h2>
                     </div>
 
@@ -13,7 +13,7 @@
                 </div>
 
                 <div class="home-image">
-                    <img v-if="post.url_image !== null" :src="post.url_image" />
+                    <img v-if="post.url_image !== null" :src="post.url_image" alt="image du post"/>
                 </div>
             </router-link>
         </section>
