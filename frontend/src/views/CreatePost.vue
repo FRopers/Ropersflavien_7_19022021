@@ -11,8 +11,9 @@
                     <textarea id="text" v-model="post" placeholder="Que voulez vous dire?" aria-required=true required></textarea>
                 </div>
 
-                <div>
-                    <img v-if="imageUrl" :src="imageUrl" alt="image du post"/>
+                <div class="createpost-form-view-image" v-if="imageUrl">
+                    <font-awesome-icon  icon="times-circle" @click="deleteImageView()" class="createpost-form-view-image_delete" title="supprimer" />
+                    <img :src="imageUrl" alt="image du post"/>
                 </div>
                
                 <div class="createpost-form-image">
@@ -61,6 +62,10 @@ export default {
             const file = event.target.files[0];
             this.imageUpload = file;
             this.imageUrl = URL.createObjectURL(file);       
+        },
+
+        deleteImageView(){
+            this.imageUrl = null;
         },
 
         postNewPost(){
@@ -128,6 +133,23 @@ export default {
         background-color: $background_color_primary;
         border-radius: 0px;
         border: none;
+    }
+}
+
+.createpost-form-view-image{
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    &_delete{
+        font-size: 1.4em;
+        position: relative;
+        margin: 0 -8px -12px 0;
+        color: $button_color_tertiary;
+        background-color: $background_color_primary;
+        border-radius: 50%;
+    }
+    & img{
+        margin-bottom: 20px;
     }
 }
 

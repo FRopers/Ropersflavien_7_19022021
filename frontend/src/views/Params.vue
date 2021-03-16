@@ -279,6 +279,7 @@ export default {
     margin: 20px 0 50px 0;
     & label {
         @include avatar_border(125px);
+        cursor: pointer;
     }
     & input {
         display: none;
