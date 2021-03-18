@@ -1,6 +1,6 @@
 # Groupmania #
 
-  Projet 7 de la formation de dévelloppeur WEB 
+  Projet 7 de la formation de développeur WEB 
 
 ### Prérequis ###
 
