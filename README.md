@@ -1,4 +1,4 @@
-# Groupmania #
+# Groupomania #
 
   Projet 7 de la formation de développeur WEB 
 
